@@ -1,0 +1,21 @@
+CREATE TABLE tickets (
+  id binary(16) NOT NULL,
+  closed_date datetime(6) DEFAULT NULL,
+  code varchar(255) NOT NULL,
+  description varchar(255) NOT NULL,
+  opening_date datetime(6) NOT NULL,
+  search_term varchar(255) DEFAULT NULL,
+  ticket_status varchar(255) NOT NULL,
+  title varchar(255) NOT NULL,
+  customer_id binary(16) NOT NULL,
+  priority_id binary(16) NOT NULL,
+  technical_id binary(16) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY UK_e13ki8l4l6u599ociuljrqka9 (code),
+  KEY FKi81xre2n3j3as1sp24j440kq1 (customer_id),
+  KEY FKano4h3jfjbejh4aqwp8phfm69 (priority_id),
+  KEY FK7jtlmjwqkv81k9qb3k81qg97f (technical_id),
+  CONSTRAINT FK7jtlmjwqkv81k9qb3k81qg97f FOREIGN KEY (technical_id) REFERENCES technicians (id),
+  CONSTRAINT FKano4h3jfjbejh4aqwp8phfm69 FOREIGN KEY (priority_id) REFERENCES priorities (id),
+  CONSTRAINT FKi81xre2n3j3as1sp24j440kq1 FOREIGN KEY (customer_id) REFERENCES customers (id)
+)
