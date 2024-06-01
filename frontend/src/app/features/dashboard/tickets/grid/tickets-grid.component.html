@@ -1,0 +1,120 @@
+<section>
+  <!-- Sumário -->
+  <div class="row justify-content-between gap-3 gap-xxl-0 mb-5">
+
+    <!-- Sumário -->
+    <div class="col-12 col-xxl-8 py-3 rounded shadow bg-white">
+      <div class="row align-items-center">
+        <div class="col-12 col-md-auto mb-4 mb-md-0">
+          <span class="fs-6">Sumário:</span>
+        </div>
+
+        <div class="col-6 col-sm-auto mb-2 mb-sm-0">
+          <a class="btn btn-light border border-light-subtle" [routerLink]="['./']" [queryParams]="{status: 'todos'}" [routerLinkActive]="['bg-secondary', 'text-white']">Todos</a>
+        </div>
+
+        <div class="col-6 col-sm-auto mb-2 mb-sm-0">
+          <a class="btn btn-light border border-light-subtle" [routerLink]="['./']" [queryParams]="{status: ticketStatusEnum.IN_PROGRESS}" [routerLinkActive]="['bg-secondary', 'text-white']">Em Progresso - <b>{{ticketsStatusSummary.inProgress}}</b></a>
+        </div>
+
+        <div class="col-6 col-sm-auto">
+          <a class="btn btn-light border border-light-subtle" [routerLink]="['./']" [queryParams]="{status: ticketStatusEnum.PENDING}" [routerLinkActive]="['bg-secondary', 'text-white']">Pendentes - <b>{{ticketsStatusSummary.pending}}</b></a>
+        </div>
+
+        <div class="col-6 col-sm-auto">
+          <a class="btn btn-light border border-light-subtle" [routerLink]="['./']" [queryParams]="{status: ticketStatusEnum.RESOLVED}" [routerLinkActive]="['bg-secondary', 'text-white']">Resolvido - <b>{{ticketsStatusSummary.resolved}}</b></a>
+        </div>
+
+        <div class="col-12 px-3 d-lg-none mb-3 mt-4 mx-auto">
+          <mat-divider></mat-divider>
+        </div>
+
+        <div class="col-12 col-lg-auto ms-auto">
+          <button class="btn btn-success border" (click)="exportAllTicketsToExcel()">Exportar Excel</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Campo de pesquisa -->
+    <div class="col-12 col-xxl-3 p-0">
+      <div class="p-4 d-flex align-items-center gap-2 rounded bg-white shadow">
+        <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="search"></mat-icon>
+        <input #searchFilterInput [(ngModel)]="searchFilter" type="text" name="search" (keyup.enter)="handleSearch()" placeholder="Pesquisar" class="focus-ring-light focus-ring border-0">
+      </div>
+    </div>
+
+  </div>
+
+  <div class="row">
+    <div class="col-12 table-container rounded shadow p-0">
+      <!-- Tabela -->
+      <mat-table [dataSource]="matTableDataSource" matSort class="mat-elevation-z8 w-100" >
+
+        <!-- Code Column -->
+        <ng-container matColumnDef="code">
+          <mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by code"> Código </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.code}} </mat-cell>
+        </ng-container>
+
+        <!-- Title Column -->
+        <ng-container matColumnDef="title">
+          <mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by number"> Titulo </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.title}} </mat-cell>
+        </ng-container>
+
+        <!-- Customer Column -->
+        <ng-container matColumnDef="customer">
+          <mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by number"> Cliente </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <app-user-profile-button [userDetails]="element.customer"></app-user-profile-button>
+          </mat-cell>
+        </ng-container>
+
+        <!-- technical Column -->
+        <ng-container matColumnDef="technical">
+          <mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by number"> Técnico </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <app-user-profile-button [userDetails]="element.technical"></app-user-profile-button>
+          </mat-cell>
+        </ng-container>
+
+        <!-- Open Date Column -->
+        <ng-container matColumnDef="openDate">
+          <mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by number"> Data de Abertura </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.openingDate | date:'dd/MM/yyyy hh:mm'}} </mat-cell>
+        </ng-container>
+
+        <!-- Priority Column -->
+        <ng-container matColumnDef="priority">
+          <mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by number"> Prioridade </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <span class="rounded-pill py-1 px-3" [ngClass]="definePriorityColor(element.priority.title)">{{element.priority.title}}</span>
+          </mat-cell>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by number"> Status </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <span class="rounded-pill py-1 px-3" [ngClass]="defineStatusColor(element.ticketStatus)">{{element.ticketStatus}}</span>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openTicketDetails(row)"></mat-row>
+
+      </mat-table>
+
+      <mat-paginator
+        [pageSizeOptions]="pageSizeOptions"
+        [pageSize]="initialPageSize"
+        [length]="ticketsTotalLength"
+        [showFirstLastButtons]="true"
+        (page)="handlePageChange($event)"
+        aria-label="Select page of periodic elements">
+      </mat-paginator>
+    </div>
+  </div>
+
+</section>

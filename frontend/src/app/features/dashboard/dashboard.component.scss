@@ -1,0 +1,23 @@
+.side-bar{
+  bottom: 0px;
+  left: unset;
+  height: auto;
+}
+
+.teste{
+  min-height: 96vh !important;
+}
+
+@media (width > 992px){
+  .side-bar {
+    left: 0;
+    bottom: unset;
+    height: 100%;
+  }
+}
+
+@media (width < 992px){
+  .footer-container{
+    margin-bottom: 4.5rem;
+  }
+}

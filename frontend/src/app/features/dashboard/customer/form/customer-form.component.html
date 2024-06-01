@@ -1,0 +1,100 @@
+<section class="container-fluid p-0">
+
+  <div class="row align-items-center justify-content-center">
+    <div class="col-12 col-md-10 col-xl-8 col-xxl-7">
+      <form [formGroup]="customerForm" class="px-4 px-lg-5 py-4 rounded bg-white shadow border border-light-subtle">
+
+        <div class="row justify-content-center mb-5" *ngIf="customerForm.get('userStatus')?.value">
+          <div class="col-12">
+            <span class="w-100 fs-5 badge" [ngClass]="{'text-bg-success': customerIsActive, 'text-bg-danger': !customerIsActive}">
+              {{customerForm.get('userStatus')?.value}}
+            </span>
+          </div>
+        </div>
+
+        <div class="row">
+          <h2 class="fs-2 fw-normal text-center">
+            Cliente
+          </h2>
+        </div>
+
+        <!-- Foto de perfil -->
+        <div class="row justify-content-center mb-4">
+          <div class="col-auto d-flex flex-column align-items-center">
+            <img [src]="customerForm.get('profilePicture')?.value" alt="Foto de perfil do usuário." width="250px" height="250px" class="rounded object-fit-cover mb-2">
+            <button type="button" class="btn btn-secondary btn-sm" *ngIf="customerForm.enabled" (click)="activeProfilePictureInput()">Alterar Foto</button>
+            <input type="file" accept=".jpg, .jpeg, .png" #customerProfilePictureInput class="d-none" (change)="handleProfilePictureInput()">
+          </div>
+        </div>
+
+        <!-- Name -->
+        <div class="row mb-4 justify-content-center">
+          <mat-form-field class="col-12 col-sm-10 col-lg-9" appearance="outline">
+            <mat-label>Nome do Cliente</mat-label>
+            <input type="text" matInput formControlName="name">
+            <mat-error *ngIf="customerForm.get('name')?.hasError('required')">O preenchimento do campo "Nome do Clinte" é <b>obrigatório!</b></mat-error>
+          </mat-form-field>
+
+        </div>
+
+        <!-- Password -->
+        <div class="row mb-4 justify-content-center" *ngIf="!isDetailView">
+          <mat-form-field class="col-12 col-sm-10 col-lg-9" appearance="outline">
+            <mat-label>Senha</mat-label>
+            <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
+            <button class="border-0 bg-transparent me-3" mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
+              <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="customerForm.get('password')?.hasError('required')">O preenchimento do campo "Senha" é <b>obrigatório!</b></mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- CNPJ -->
+        <div class="row mb-4 justify-content-center">
+          <mat-form-field class="col-12 col-sm-10 col-lg-9" appearance="outline">
+            <mat-label>CNPJ</mat-label>
+            <input type="text" matInput formControlName="cnpj">
+            <mat-error *ngIf="customerForm.get('cnpj')?.hasError('required')">O preenchimento do campo "CNPJ" é <b>obrigatório!</b></mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- E-mail -->
+        <div class="row mb-4 justify-content-center">
+          <mat-form-field class="col-12 col-sm-10 col-lg-9" appearance="outline">
+            <mat-label>E-mail</mat-label>
+            <input type="email" matInput formControlName="email">
+            <mat-error *ngIf="customerForm.get('email')?.hasError('required')">O preenchimento do campo "E-mail" é <b>obrigatório!</b></mat-error>
+            <mat-error *ngIf="customerForm.get('email')?.hasError('email')">O e-mail digitado é <b>inválido!</b></mat-error>
+          </mat-form-field>
+
+        </div>
+
+        <!-- Telefone -->
+        <div class="row mb-4 justify-content-center">
+          <mat-form-field class="col-12 col-sm-10 col-lg-9" appearance="outline">
+            <mat-label>Telefone</mat-label>
+            <input type="tel" matInput formControlName="phoneNumber" mask="(00) 00000-0000" >
+            <mat-error *ngIf="customerForm.get('phoneNumber')?.hasError('required')">O preenchimento do campo "Telefone" é <b>obrigatório!</b></mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Botões -->
+        <div class="row justify-content-between p-3">
+          <div class="col-auto">
+            <button class="btn btn-secondary" (click)="return()">Voltar</button>
+          </div>
+
+          <div class="col-auto d-flex gap-2 gap-lg-3">
+            <button class="btn btn-success" *ngIf="!isDetailView" (click)="saveCustomer()">Cadastrar</button>
+            <button class="btn btn-success" *ngIf="isDetailView && canUpdate() && formIsBeingEdited" (click)="updateCustomer()">Salvar Modificações</button>
+            <button class="btn btn-warning" *ngIf="isDetailView && canUpdate() && !formIsBeingEdited" (click)="enableFormEdit()">Editar</button>
+            <button class="btn" [ngClass]="{'btn-danger': customerIsActive, 'btn-success': !customerIsActive}" *ngIf="isDetailView && !formIsBeingEdited && loggedUserDetailsService.isAdmin()" (click)="changeCustomerActiveStatus()">{{customerIsActive ? "Inativar" : "Ativar"}}</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+
+</section>

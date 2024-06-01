@@ -1,0 +1,9 @@
+<button class="btn p-0 d-flex align-items-center justify-content-center gap-1" (click)="openUserDetails()">
+  <div class="rounded-circle overflow-hidden" style="max-width: 35px; max-height: 35px;">
+    <img [src]="userDetails.profilePicture" alt="Foto de perfil do usuário." class="object-fit-cover" width="35px" height="35px">
+  </div>
+  <span class="d-none d-md-inline-block" [ngClass]="textColor">
+    {{userDetails.name}}
+  </span>
+</button>
+

@@ -1,0 +1,28 @@
+
+aside {
+  width: 15%;
+
+  nav{
+
+    li:hover{
+      background-color: #d5d8f288;
+      transition: background-color 500ms;
+    }
+
+  }
+
+}
+
+.link-selected {
+  color: #545DDF;
+  background-color: #D5D8F2;
+  border-bottom: .3rem solid #545DDF;
+  border-right: none;
+}
+
+@media (width > 992px) {
+  .link-selected {
+    border-right: .3rem solid #545DDF;
+    border-bottom: none;
+  }
+}
