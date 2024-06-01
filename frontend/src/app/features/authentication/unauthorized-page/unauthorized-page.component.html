@@ -1,0 +1,20 @@
+<section class="container vw-100 vh-100">
+  <div class="row h-100 align-items-center justify-content-center">
+    <div class="col-md-6">
+      <img class="img-fluid" src="assets/images/401 Error Unauthorized-pana.png" alt="Ilustração representando uma página restrita.">
+    </div>
+
+    <div class="col-md-6 d-flex flex-column justify-content-center gap-3">
+      <h1 class="fs-2 fw-bold">
+        Você não tem acesso!
+      </h1>
+      <p class="fs-5">
+        Sua conta não está autorizada à visualizar esta página. Certifique-se de que a URL está correta e que sua conta tem acesso.
+      </p>
+      <div class="d-flex gap-2">
+        <a href="/dashboard/home" class="btn btn btn-primary fs-5">Voltar para a Home</a>
+        <button class="btn btn btn-primary fs-5" (click)="authenticationService.logout()">Entrar com outra conta</button>
+      </div>
+    </div>
+  </div>
+</section>

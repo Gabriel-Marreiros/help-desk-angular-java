@@ -1,0 +1,75 @@
+<section class="container-fluid min-vh-100 d-flex align-items-center bg-body-tertiary">
+  <div class="row py-4 py-lg-0 justify-content-center">
+
+    <div class="col-11 col-sm-10 col-md-9 col-lg-11 col-xl-10 col-xxl-8 p-4 d-flex flex-column bg-white border border-light-subtle rounded shadow">
+
+      <header class="row">
+        <div class="col-auto ps-4">
+          <h1 class="m-0 fs-4 fw-normal">Help Desk</h1>
+          <h2 class="m-0 fs-6 fw-normal">Angular & Java</h2>
+        </div>
+      </header>
+
+      <div class="row">
+        <div class="col-12 col-lg-6">
+          <img src="assets/images/2828682.jpg" alt="Ilustração de dois avatares, um masculino e outro feminino, segurando icones que remetem à login em frente à um computador gigante." class="img-fluid">
+        </div>
+
+        <div class="col-12 col-lg-6">
+          <form class="h-100 d-flex flex-column justify-content-center" [formGroup]="loginForm" (submit)="login($event)">
+
+            <div class="row mb-5">
+              <div class="text-center text-lg-start">
+                <h2 class="fs-2 mb-2">Bem-Vindo!</h2>
+                <h4 class="fs-6 fw-light">Faça o login para continuar</h4>
+              </div>
+            </div>
+
+            <!-- Campo de E-mail -->
+            <div class="row mb-3 justify-content-center justify-content-lg-start">
+              <mat-form-field class="col-12 col-md-10 col-lg-10">
+                <mat-label>Digite o E-mail</mat-label>
+                <input matInput placeholder="exemplo@email.com" formControlName="email">
+                <mat-error *ngIf="showControlError('email', 'email')">O e-mail não esta em um formato válido!</mat-error>
+                <mat-error *ngIf="showControlError('email', 'required')">O preenchimento do e-mail é obrigatório!</mat-error>
+              </mat-form-field>
+            </div>
+
+            <!-- Campo de Senha -->
+            <div class="row mb-3 justify-content-center justify-content-lg-start">
+              <mat-form-field class="col-12 col-md-10 col-lg-10">
+                <mat-label>Digite a Senha</mat-label>
+                <input matInput [type]="hidePasswordText ? 'password' : 'text'" formControlName="password">
+                <button class="border-0 bg-transparent me-3" mat-icon-button matSuffix (click)="hidePasswordText = !hidePasswordText" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePasswordText">
+                  <mat-icon>{{hidePasswordText ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+                <mat-error *ngIf="showControlError('password', 'required')">O preenchimento da senha é obrigatório!</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="row mb-3 justify-content-center justify-content-lg-start p-2">
+              <div class="col-12 col-md-10 col-lg-10 alert alert-danger" role="alert" *ngIf="invalidLogin">
+                E-mail ou senha invalidos!
+              </div>
+            </div>
+
+            <div class="row justify-content-center justify-content-lg-start">
+              <div class="col-12 col-md-10 col-lg-5">
+                <button class="w-100 btn btn-primary rounded-pill" type="submit">Entrar</button>
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
+      <footer class="row mt-5 mt-lg-2">
+        <h5 class="text-center">
+          Copyright &copy; <time>{{currentYear}}</time> Gabriel Marreiros - Todos os direitos reservados.
+        </h5>
+      </footer>
+
+    </div>
+
+  </div>
+</section>
