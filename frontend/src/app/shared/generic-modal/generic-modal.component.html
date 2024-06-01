@@ -1,0 +1,12 @@
+<div mat-dialog-container class="h-100 p-2 d-flex flex-column justify-content-between">
+  <h1 mat-dialog-title class="fs-4">Help Desk</h1>
+
+  <mat-dialog-content class="d-flex align-items-center justify-content-center">
+    <p class="fs-5">{{contentMessage}}</p>
+  </mat-dialog-content>
+
+  <mat-dialog-actions [align]="'end'" class="gap-2">
+    <button *ngIf="redirectLink" class="btn btn-primary" mat-button (click)="redirect()">Ok</button>
+    <button *ngIf="showCloseButton" class="btn btn-primary" mat-button mat-dialog-close>Fechar</button>
+  </mat-dialog-actions>
+</div>

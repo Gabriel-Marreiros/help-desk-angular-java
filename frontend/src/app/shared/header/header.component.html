@@ -1,0 +1,25 @@
+<header class="px-3 px-md-5 py-2 sticky-top d-flex align-items-center justify-content-between text-white">
+  <a [routerLink]="['home']" class="text-center text-white">
+    Help Desk
+    <br>
+    Angular & Java
+  </a>
+
+  <nav class="h-100">
+    <ul class="h-100 d-flex align-items-center justify-content-center m-0 gap-3">
+      <!-- <li matTooltip="Notificações">
+        <button class="btn text-center rounded-circle p-0" style="width: 35px; height: 35px;">
+          <mat-icon class="align-middle">notifications_none</mat-icon>
+        </button>
+      </li> -->
+      <li matTooltip="Sair da Conta">
+        <button class="btn rounded-circle p-0" style="width: 35px; height: 35px;" (click)="logout()">
+          <mat-icon class="align-middle">exit_to_app</mat-icon>
+        </button>
+      </li>
+      <li matTooltip="Editar Conta" class="align-self-center">
+        <app-user-profile-button [userDetails]="userDetails" textColor="text-white"></app-user-profile-button>
+      </li>
+    </ul>
+  </nav>
+</header>
