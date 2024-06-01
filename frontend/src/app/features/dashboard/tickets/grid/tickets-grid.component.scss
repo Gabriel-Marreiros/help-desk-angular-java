@@ -1,0 +1,31 @@
+.table-container{
+  overflow-x: auto;
+  height: 100%;
+
+  mat-table, mat-paginator{
+    min-width: 800px;
+  }
+}
+
+.mat-mdc-table {
+  width: 100%;
+  min-height: 84%;
+  max-height: 84%;
+  overflow: auto;
+}
+
+:host::ng-deep mat-paginator .mat-mdc-paginator-container{
+  justify-content: center;
+}
+
+mat-row{
+  cursor: pointer;
+
+  &:hover {
+    mat-cell{
+      background-color: var(--bs-light);
+    }
+  }
+
+}
+
