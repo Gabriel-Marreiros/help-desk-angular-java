@@ -46,7 +46,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: test
     ports:
-      -"3600:3600"
+      -"3306:3306"
     networks:
       - help-desk-angular-java-network
       - mysql-network
