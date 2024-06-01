@@ -1,0 +1,47 @@
+<aside class="h-100 w-100 bg-white shadow-lg">
+    <nav class="h-100">
+      <ul class="h-100 p-0 m-0 d-flex flex-lg-column justify-content-center justify-content-lg-start align-items-center align-items-lg-stretch pt-lg-5 text-center" >
+        <li routerLinkActive="link-selected">
+          <a [routerLink]="['home']" class="d-block w-100 h-100 p-4 fs-5 text-decoration-none">
+            <fa-icon [icon]="faHouse"></fa-icon>
+            <span class="ms-2 d-none d-md-inline-block">Home</span>
+          </a>
+        </li>
+
+        <li routerLinkActive="link-selected">
+          <a [routerLink]="['chamados']" class="d-block w-100 h-100 p-4 fs-5 text-decoration-none">
+            <fa-icon [icon]="faTicket"></fa-icon>
+            <span class="ms-2 d-none d-md-inline-block">Chamados</span>
+          </a>
+        </li>
+
+        <li routerLinkActive="link-selected">
+          <a [routerLink]="['clientes']" class="d-block w-100 h-100 p-4 fs-5 text-decoration-none">
+            <fa-icon [icon]="faSuitcase"></fa-icon>
+            <span class="ms-2 d-none d-md-inline-block">Clientes</span>
+          </a>
+        </li>
+
+        <li routerLinkActive="link-selected">
+          <a [routerLink]="['tecnicos']" class="d-block w-100 h-100 p-4 fs-5 text-decoration-none">
+            <fa-icon [icon]="faScrewdriverWrench"></fa-icon>
+            <span class="ms-2 d-none d-md-inline-block">Técnicos</span>
+          </a>
+        </li>
+
+        <li>
+          <a href="https://github.com/Gabriel-Marreiros" target="_blank" class="d-block w-100 h-100 p-4 fs-5 text-decoration-none">
+            <fa-icon [icon]="faGithub"></fa-icon>
+            <span class="ms-2 d-none d-md-inline-block">Github</span>
+          </a>
+        </li>
+
+        <li class="my-lg-auto bg-transparent" *ngIf="canViewButtonNewTicket()">
+          <button class="btn btn-primary" [routerLink]="['chamados', 'formulario']" >
+            <span class="d-none d-lg-inline-block">Abrir Chamado</span>
+            <span> +</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
+</aside>

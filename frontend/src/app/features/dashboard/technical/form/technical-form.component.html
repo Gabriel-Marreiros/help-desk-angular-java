@@ -1,0 +1,100 @@
+
+<section class="container-fluid p-0">
+
+  <div class="row align-items-center justify-content-center">
+    <div class="col-12 col-md-10 col-xl-8 col-xxl-7">
+      <form [formGroup]="technicalForm">
+        <fieldset class="px-4 px-lg-5 rounded bg-white shadow border border-light-subtle">
+
+          <!-- Foto de perfil -->
+          <legend class="mb-4 text-center">
+            <div class="d-flex flex-column align-items-center gap-1">
+              <img [src]="technicalForm.get('profilePicture')?.value" alt="Foto de perfil do usuário." width="270px" height="270px" class="rounded-circle object-fit-cover">
+              <button type="button" class="btn btn-secondary btn-sm" *ngIf="technicalForm.enabled" (click)="activeProfilePictureInput()">Alterar Foto</button>
+              <input type="file" accept=".jpg, .jpeg, .png" #profilePictureInput class="d-none" (change)="handleProfilePictureInput()">
+            </div>
+          </legend>
+
+          <div class="row">
+            <h2 class="fs-2 fw-normal text-center">
+              Técnico
+            </h2>
+          </div>
+
+          <div class="row mb-5 justify-content-center" *ngIf="technicalForm.get('userStatus')?.value">
+            <div class="col-6 col-sm-5 col-lg-4">
+              <span class="w-100 fs-5 badge" [ngClass]="{'text-bg-success': technicalIsActive, 'text-bg-danger': !technicalIsActive}">
+                {{technicalForm.get('userStatus')?.value}}
+              </span>
+            </div>
+          </div>
+
+          <!-- Nome -->
+          <div class="row mb-4 justify-content-center">
+            <mat-form-field class="col-12 col-sm-10 col-lg-9" appearance="outline">
+              <mat-label>Nome</mat-label>
+              <input type="text" matInput formControlName="name">
+              <mat-error *ngIf="technicalForm.get('name')?.hasError('required')">O preenchimento do campo "Nome" é <b>obrigatório!</b></mat-error>
+            </mat-form-field>
+
+          </div>
+
+          <!-- E-mail -->
+          <div class="row mb-4 justify-content-center">
+            <mat-form-field class="col-12 col-sm-10 col-lg-9" appearance="outline">
+              <mat-label>E-mail</mat-label>
+              <input type="email" matInput formControlName="email">
+              <mat-error *ngIf="technicalForm.get('email')?.hasError('required')">O preenchimento do campo "E-mail" é <b>obrigatório!</b></mat-error>
+              <mat-error *ngIf="technicalForm.get('email')?.hasError('email')">E-mail inválido!</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="row mb-4 justify-content-center" *ngIf="!isDetailView">
+            <mat-form-field class="col-12 col-sm-10 col-lg-9" appearance="outline">
+              <mat-label>Senha</mat-label>
+              <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password">
+              <button class="border-0 bg-transparent me-3" mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
+                <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+              <mat-error *ngIf="technicalForm.get('password')?.hasError('required')">O preenchimento do campo de "Senha" é <b>obrigatório!</b></mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Data de Nascimento -->
+          <div class="row mb-4 justify-content-center">
+            <mat-form-field class="col-12 col-sm-10 col-lg-9" appearance="outline">
+              <mat-label>Data de Nascimento</mat-label>
+              <input matInput [matDatepicker]="datePicker" formControlName="dateBirth">
+              <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
+              <mat-datepicker #datePicker></mat-datepicker>
+              <mat-error *ngIf="technicalForm.get('dateBirth')?.hasError('required')">O preenchimento do campo "Data de Nascimento" é <b>obrigatório!</b></mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Telefone -->
+          <div class="row mb-4 justify-content-center">
+            <mat-form-field class="col-12 col-sm-10 col-lg-9" appearance="outline">
+              <mat-label>Telefone</mat-label>
+              <input type="tel" matInput formControlName="phoneNumber" />
+              <mat-error *ngIf="technicalForm.get('phoneNumber')?.hasError('required')">O preenchimento do campo "Telefone" é <b>obrigatório!</b></mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="row justify-content-between p-3">
+            <div class="col-auto">
+              <button class="btn btn-secondary" (click)="return()">Voltar</button>
+            </div>
+
+            <div class="col-auto d-flex gap-2 gap-lg-3">
+              <button class="btn btn-success" *ngIf="!isDetailView" (click)="saveTechnical()">Cadastrar</button>
+              <button class="btn btn-success" *ngIf="isDetailView && canUpdate() && formIsBeingEdited" (click)="updateTechnical()">Salvar Modificações</button>
+              <button class="btn btn-warning" *ngIf="isDetailView && canUpdate() && !formIsBeingEdited" (click)="enableFormEdit()">Editar</button>
+              <button class="btn" [ngClass]="{'btn-danger': technicalIsActive, 'btn-success': !technicalIsActive}" *ngIf="isDetailView && !formIsBeingEdited && loggedUserDetailsService.isAdmin()" (click)="changeTechnicalActiveStatus()">{{technicalIsActive ? "Inativar" : "Ativar"}}</button>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+
+</section>
