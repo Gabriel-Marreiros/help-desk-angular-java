@@ -1,7 +1,5 @@
 version: '2'
 
-name: help-desk-angular-java
-
 services:
   backend:
     image: gabrielmarreiros/help-desk-angular-java-backend
@@ -46,7 +44,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: test
     ports:
-      -"3306:3306"
+      - "3306:3306"
     networks:
       - help-desk-angular-java-network
       - mysql-network
