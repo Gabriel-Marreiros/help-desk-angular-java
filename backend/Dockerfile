@@ -10,6 +10,8 @@ COPY pom.xml ./
 
 COPY src/ ./src
 
+RUN chmod +x mvn
+
 RUN mvn clean package -DskipTests
 
 ARG JAR_FILE=target/*.jar
