@@ -84,6 +84,10 @@ public class TicketService {
     }
 
     public Page<Ticket> getTicketsByStatusPaginated(PageRequest pageRequest, String status) {
+        if (!TicketUtils.ticketStatusIsValid(status)){
+            throw new InvalidTicketStatusException();
+        }
+
         return this.ticketRepository.findByTicketStatus(status, pageRequest);
     }
 
