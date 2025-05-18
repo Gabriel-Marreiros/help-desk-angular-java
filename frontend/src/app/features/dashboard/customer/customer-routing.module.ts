@@ -13,11 +13,17 @@ const customerRoutes: Routes = [
   {
     path: "formulario",
     component: CustomerFormComponent,
-    canActivate: [AdminGuard]
+    canActivate: [AdminGuard],
+    data: {
+      breadcrumb: "Formulário"
+    }
   },
   {
     path: "detalhes/:id",
-    component: CustomerFormComponent
+    component: CustomerFormComponent,
+    data: {
+      breadcrumb: "Detalhes"
+    }
   }
 ];
 

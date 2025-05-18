@@ -1,11 +1,12 @@
+.dashboard-container{
+  min-height: 96vh !important;
+}
+
 .side-bar{
   bottom: 0px;
   left: unset;
   height: auto;
-}
-
-.teste{
-  min-height: 96vh !important;
+  z-index: 200;
 }
 
 @media (width > 992px){

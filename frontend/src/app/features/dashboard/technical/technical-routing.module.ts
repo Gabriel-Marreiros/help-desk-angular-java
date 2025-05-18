@@ -13,11 +13,17 @@ const technicalRoutes: Routes = [
   {
     path: "formulario",
     component: TechnicalFormComponent,
-    canActivate: [AdminGuard]
+    canActivate: [AdminGuard],
+    data: {
+      breadcrumb: "Formulário"
+    }
   },
   {
     path: "detalhes/:id",
-    component: TechnicalFormComponent
+    component: TechnicalFormComponent,
+    data: {
+      breadcrumb: "Detalhes"
+    }
   }
 ];
 

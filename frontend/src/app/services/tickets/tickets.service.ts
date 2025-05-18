@@ -21,16 +21,13 @@ export class TicketsService {
     });
   }
 
-  getTicketsByStatusPaginated(page: number, size: number, status: string): Observable<IPage<TicketModel>> {
-    let url: string = `${this.BASE_URL}/paginated?page=${page}&size=${size}`;
+  getTicketsPaginated(queryParams: {page: number, size: number, technical?: string, customer?: string, status?: string, priority?: string, search?: string}): Observable<IPage<TicketModel>> {
+    const url: string = `${this.BASE_URL}/paginated`;
 
-    if(status != "todos"){
-      url += `&status=${status}`;
-    }
-
-    return this.http.get<IPage<TicketModel>>(url);
+    return this.http.get<IPage<TicketModel>>(url, {
+      params: queryParams
+    });
   }
-
 
   getTicketById(id: string): Observable<HttpResponse<TicketModel>> {
     return this.http.get<TicketModel>(`${this.BASE_URL}/${id}`, {
@@ -47,7 +44,7 @@ export class TicketsService {
     });
   }
 
-  updateStatus(ticketId: string, nextStatus: TicketStatusEnum): Observable<HttpResponse<string>> {
+  updateTicketStatus(ticketId: string, nextStatus: TicketStatusEnum): Observable<HttpResponse<string>> {
     const url: string = `${this.BASE_URL}/update-status/${ticketId}`
 
     return this.http.put(url, nextStatus, {
@@ -65,16 +62,18 @@ export class TicketsService {
     })
   }
 
-
   updateTicket(id: string, ticketUpdate: Partial<TicketModel>): Observable<TicketModel>{
     const url: string = `${this.BASE_URL}/${id}`;
 
     return this.http.put<TicketModel>(url, ticketUpdate);
   }
 
-  getTicketsBySearchTermPaginated(page: number, size: number, searchTerm: string): Observable<IPage<TicketModel>>{
-    const url: string = `${this.BASE_URL}/by-search-term/paginated?page=${page}&size=${size}&searchTerm=${searchTerm}`
+  assignTicketTechnical(ticketId: string, technicalAssign: {technicalId: string}): Observable<HttpResponse<TicketModel>>{
+    const url: string = `${this.BASE_URL}/${ticketId}/assign-technical`;
 
-    return this.http.get<IPage<TicketModel>>(url);
+    return this.http.patch<TicketModel>(url, technicalAssign, {
+      responseType: "json",
+      observe: 'response'
+    });
   }
 }

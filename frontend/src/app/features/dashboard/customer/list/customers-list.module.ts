@@ -5,6 +5,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterModule } from '@angular/router';
 import { CustomerService } from 'src/app/services/customer/customer.service';
 import { CustomersListComponent } from './customers-list.component';
+import { FilterBarModule } from 'src/app/shared/components/filter-bar/filter-bar.module';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -19,7 +23,11 @@ import { CustomersListComponent } from './customers-list.component';
     CommonModule,
     MatCardModule,
     RouterModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    FilterBarModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    FormsModule
   ],
   providers: [
     CustomerService

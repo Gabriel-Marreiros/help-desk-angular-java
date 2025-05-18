@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { LoginFormComponent } from './login-form.component';
 import { RouterModule } from '@angular/router';
-import { LoadingModalModule } from 'src/app/shared/loading-modal/loading-modal.module';
+import { LoadingModalModule } from 'src/app/shared/components/loading-modal/loading-modal.module';
 import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({

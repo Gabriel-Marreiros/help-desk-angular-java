@@ -16,22 +16,34 @@ const dashboardRoutes: Routes = [
       },
       {
         path: "home",
-        component: HomeComponent
+        component: HomeComponent,
+        data: {
+          breadcrumb: "Início"
+        }
       },
 
       {
         path: "chamados",
-        loadChildren: () => import("./tickets/tickets.module").then(m => m.TicketsModule)
+        loadChildren: () => import("./tickets/tickets.module").then(m => m.TicketsModule),
+        data: {
+          breadcrumb: "Chamados"
+        }
       },
 
       {
         path: "tecnicos",
-        loadChildren: () => import("./technical/technical.module").then(m => m.TechnicalModule)
+        loadChildren: () => import("./technical/technical.module").then(m => m.TechnicalModule),
+        data: {
+          breadcrumb: "Técnicos"
+        }
       },
 
       {
         path: "clientes",
-        loadChildren: () => import("./customer/customer.module").then((m) => m.CustomerModule)
+        loadChildren: () => import("./customer/customer.module").then((m) => m.CustomerModule),
+        data: {
+          breadcrumb: "Clientes"
+        }
       }
     ]
   },
