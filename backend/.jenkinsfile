@@ -29,7 +29,7 @@ pipeline {
                     
                     echo 'Generating reports with JUnit reports...'
                     
-                    junit('./target/surefire-reports/*.xml')
+                    junit('target/surefire-reports/*.xml')
                 }
             }
         }
@@ -76,7 +76,7 @@ pipeline {
     post { 
         always { 
             echo 'Deleting images with tag <none>'
-            sh 'docker rmi $(docker images -f "dangling=true" -q) --force'
+            sh 'docker rmi $(docker images -f "dangling=true" -q) --force || true'
 
             echo 'Cleaning up the Workspace...'
             cleanWs()
