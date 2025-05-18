@@ -9,37 +9,22 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "technicians")
-public class Technical {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+@PrimaryKeyJoinColumn(name = "user_id")
+public class Technical extends User {
 
     @Column(nullable = false)
     @Temporal(TemporalType.DATE)
     private Date dateBirth;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
     public Technical() {}
 
     public Technical(UUID id) {
-        this.id = id;
+        super(id);
     }
 
-    public Technical(Date dateBirth, User user) {
+    public Technical(String name, String email, String password, String phoneNumber, String profilePicture, Role role, String userStatus, Date dateBirth) {
+        super(name, email, password, phoneNumber, profilePicture, role, userStatus);
         this.dateBirth = dateBirth;
-        this.user = user;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public Date getDateBirth() {
@@ -48,14 +33,6 @@ public class Technical {
 
     public void setDateBirth(Date dateBirth) {
         this.dateBirth = dateBirth;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
 }

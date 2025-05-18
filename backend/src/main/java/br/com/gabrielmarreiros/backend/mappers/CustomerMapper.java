@@ -23,31 +23,27 @@ public class CustomerMapper {
     public CustomerResponseDTO toResponseDTO(Customer customerEntity){
         return new CustomerResponseDTO(
                 customerEntity.getId(),
-                customerEntity.getUser().getId(),
-                customerEntity.getUser().getName(),
-                customerEntity.getUser().getEmail(),
-                customerEntity.getUser().getPhoneNumber(),
+                customerEntity.getName(),
+                customerEntity.getEmail(),
+                customerEntity.getPhoneNumber(),
                 customerEntity.getCnpj(),
-                customerEntity.getUser().getProfilePicture(),
-                customerEntity.getUser().getRole(),
-                customerEntity.getUser().getUserStatus()
+                customerEntity.getProfilePicture(),
+                customerEntity.getRole(),
+                customerEntity.getUserStatus()
         );
     }
 
     public Customer toEntity(CustomerRegisterRequestDTO customerRegisterRequest){
-        User user = new User();
-        user.setName(customerRegisterRequest.name());
-        user.setEmail(customerRegisterRequest.email());
-        user.setPassword(customerRegisterRequest.password());
-        user.setPhoneNumber(customerRegisterRequest.phoneNumber());
-        user.setProfilePicture(customerRegisterRequest.profilePicture());
-        user.setUserStatus(UserStatusEnum.ACTIVE.getValue());
+        Customer customer = new Customer();
+        customer.setName(customerRegisterRequest.name());
+        customer.setEmail(customerRegisterRequest.email());
+        customer.setCnpj(customerRegisterRequest.cnpj());
+        customer.setPassword(customerRegisterRequest.password());
+        customer.setPhoneNumber(customerRegisterRequest.phoneNumber());
+        customer.setProfilePicture(customerRegisterRequest.profilePicture());
+        customer.setUserStatus(UserStatusEnum.ACTIVE.getValue());
 
-        Customer customerEntity = new Customer();
-        customerEntity.setUser(user);
-        customerEntity.setCnpj(customerRegisterRequest.cnpj());
-
-        return customerEntity;
+        return customer;
     }
 
     public List<CustomerResponseDTO> toResponseListDTO(List<Customer> customersEntityList){

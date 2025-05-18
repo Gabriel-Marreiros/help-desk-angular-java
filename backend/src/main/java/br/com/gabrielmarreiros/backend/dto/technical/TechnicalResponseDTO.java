@@ -9,8 +9,7 @@ import java.util.Date;
 import java.util.UUID;
 
 public record TechnicalResponseDTO(
-        UUID technicalId,
-        UUID userId,
+        UUID id,
         String name,
         String email,
         String phoneNumber,

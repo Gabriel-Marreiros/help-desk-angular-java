@@ -1,7 +1,7 @@
 package br.com.gabrielmarreiros.backend.configs;
 
 import br.com.gabrielmarreiros.backend.enums.RolesEnum;
-import br.com.gabrielmarreiros.backend.filters.AuthenticationFilter;
+import br.com.gabrielmarreiros.backend.filters.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -18,26 +18,26 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final AuthenticationFilter authenticationFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public SecurityConfig(AuthenticationFilter authenticationFilter) {
-        this.authenticationFilter = authenticationFilter;
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity
-                .csrf((csrf) -> csrf.disable())
-                .sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests((authorizeRequests) ->
-                    authorizeRequests
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/customers", "/technicians").hasAuthority(RolesEnum.ADMIN.getValue())
-                        .requestMatchers(HttpMethod.POST, "/customers", "/technicians").hasAuthority(RolesEnum.ADMIN.getValue())
-                        .anyRequest().authenticated()
-                )
-                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+        httpSecurity
+            .csrf((csrf) -> csrf.disable())
+            .sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests((authorizeRequests) -> authorizeRequests
+                .requestMatchers("/auth/**", "/api-docs/**", "/swagger**/**", "/actuator/**").permitAll()
+                .requestMatchers(HttpMethod.DELETE, "/customers", "/technicians").hasAuthority(RolesEnum.ADMIN.value())
+                .requestMatchers(HttpMethod.POST, "/tickets").hasAnyAuthority(RolesEnum.ADMIN.value(), RolesEnum.CUSTOMER.value())
+                .anyRequest().authenticated()
+            )
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return httpSecurity.build();
     }
 
     @Bean

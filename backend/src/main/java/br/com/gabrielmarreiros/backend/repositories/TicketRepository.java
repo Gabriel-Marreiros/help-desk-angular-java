@@ -17,11 +17,7 @@ import java.util.UUID;
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, UUID> {
 
-    Page<Ticket> findByTicketStatus(String status, PageRequest pageRequest);
-
-    Page<Ticket> findBySearchTermIgnoreCaseContaining(String searchTerm, PageRequest pageRequest);
-
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Modifying()
     @Query("""
         UPDATE
             Ticket t

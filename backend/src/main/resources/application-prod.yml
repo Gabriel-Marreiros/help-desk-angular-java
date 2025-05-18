@@ -31,6 +31,9 @@ server:
     include-exception: false
     include-stacktrace: never
 
+logging:
+  level:
+    br.com.gabrielmarreiros: INFO
 
 security:
   secret: ${JWT_SECRET}

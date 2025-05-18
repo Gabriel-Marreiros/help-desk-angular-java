@@ -1,48 +1,50 @@
 INSERT INTO
     roles (title, id)
 VALUES
-    ('Administrador', UNHEX('69af892472df4a3d9aaec4137a81544a')),
-    ('Cliente', UNHEX('dcfc3598ca7349d1ba8fd4934931b66f')),
-    ('Técnico', UNHEX('793959ef48a343969a3effd72a80b561'));
+    ('Administrador', '19596b7c-2f3d-4cb2-9213-c37e71e7e51c'),
+    ('Cliente', '0bdf9727-723c-4257-9927-74acb16054d0'),
+    ('Técnico', 'b64c59c2-994b-4cf6-b68f-b82597a37e21');
 
 INSERT INTO
     priorities (title, id)
 VALUES
-    ('Alta', UNHEX('dc27957708e74d11afc550ba6287dddb')),
-    ('Média', UNHEX('0375630c99ee4bb6bde4a39e4abb7e7a')),
-    ('Baixa', UNHEX('1741937b46bb4c588cef1148eb1a95ad'));
+    ('Alta', '365fd7c2-4d25-4407-a376-55a7b7aeec43'),
+    ('Média', '0892aa67-ae77-47a8-8f64-64a963314450'),
+    ('Baixa', '152cb1e5-a7b7-411c-ba29-19886798dfbf');
 
 INSERT INTO
     users (name, email, password, phone_number, profile_picture, user_status, role_id, id)
 VALUES
-    ('Administrador 1', 'administrador-1@email.com', '$2a$10$ibrhvSoO06qpvzRs6sSXuOR78UMbzlSD/zYtkaY/Lj4DaiNxXO9Yi', '(11) 97896-5412', 'assets/images/admin-default-profile-avatar.png', 'Ativo', UNHEX('69af892472df4a3d9aaec4137a81544a'), UNHEX('c9c9ac25703842c1b96fb8c1b765be9d')),
+    ('Administrador teste 1', 'administrador-1@email.com', '$2a$10$ibrhvSoO06qpvzRs6sSXuOR78UMbzlSD/zYtkaY/Lj4DaiNxXO9Yi', '(11) 97896-5412', 'assets/images/admin-default-profile-avatar.png', 'Ativo', '19596b7c-2f3d-4cb2-9213-c37e71e7e51c', 'a008268c-a0df-4efd-9c08-5035881bbdf3'),
 
-    ('Cliente 1', 'cliente-1@email.com', '$2a$10$M/ctOUJMUylYDvY.fPnU6.o0zfwJ8des2qF8CIkFvoG97JAVk737O', '(11) 91235-7462', 'assets/images/customer-default-profile-avatar.png', 'Ativo', UNHEX('dcfc3598ca7349d1ba8fd4934931b66f'), UNHEX('166e6777cb744d0fbcbfc0e87604e556')),
-    ('Cliente 2', 'cliente-2@email.com', '$2a$10$uyFTXDXcSgHTs9HgH59WwO4H5bzuBFw3e2nC19Jeyxe4aaKjcgnHS', '(11) 96582-1987', 'assets/images/customer-default-profile-avatar.png', 'Ativo', UNHEX('dcfc3598ca7349d1ba8fd4934931b66f'), UNHEX('9c01911e5be24a1eb5661fb5c2326b35')),
-    ('Cliente 3', 'cliente-3@email.com', '$2a$10$XGt8fVHD.i6t/IOaUo1ov..LUzxL9CmLoRIJ.pY9LBYJsLdpgvy/S', '(11) 98283-4901', 'assets/images/customer-default-profile-avatar.png', 'Ativo', UNHEX('dcfc3598ca7349d1ba8fd4934931b66f'), UNHEX('561b3b44011349559e1ce26d1ef6823e')),
-    ('Cliente 4', 'cliente-4@email.com', '$2a$10$q7gv5GddZUMinhRrziVJ5O0A91Z6FMIymaNMvyxLEl/IhiscIKHwW', '(11) 97146-9151', 'assets/images/customer-default-profile-avatar.png', 'Ativo', UNHEX('dcfc3598ca7349d1ba8fd4934931b66f'), UNHEX('19da4c953c024224948aa31c90d7be8c')),
-    ('Cliente 5', 'cliente-5@email.com', '$2a$10$XnCG5hPAppAqIkZeybmXzutU54NH7RQlhkkZ4WmUU.MIV.26XwxdG', '(11) 92589-6268', 'assets/images/customer-default-profile-avatar.png', 'Ativo', UNHEX('dcfc3598ca7349d1ba8fd4934931b66f'), UNHEX('499997e680f24a948ac9d8ee30aa70dc')),
+    ('Cliente teste 1', 'cliente-teste1@email.com', '$2a$10$M/ctOUJMUylYDvY.fPnU6.o0zfwJ8des2qF8CIkFvoG97JAVk737O', '(11) 91235-7462', 'assets/images/customer-default-profile-avatar.png', 'Ativo', '0bdf9727-723c-4257-9927-74acb16054d0', '8f069839-6943-4c4a-ae8f-6581d9dcf42c'),
+    ('Cliente teste 2', 'cliente-teste2@email.com', '$2a$10$uyFTXDXcSgHTs9HgH59WwO4H5bzuBFw3e2nC19Jeyxe4aaKjcgnHS', '(11) 96582-1987', 'assets/images/customer-default-profile-avatar.png', 'Inativo', '0bdf9727-723c-4257-9927-74acb16054d0', '6c2071db-3ebe-49a1-84a8-f728c7d9f45d'),
+    ('Cliente teste 3', 'cliente-teste3@email.com', '$2a$10$XGt8fVHD.i6t/IOaUo1ov..LUzxL9CmLoRIJ.pY9LBYJsLdpgvy/S', '(11) 98283-4901', 'assets/images/customer-default-profile-avatar.png', 'Ativo', '0bdf9727-723c-4257-9927-74acb16054d0', '99e959f1-067b-4239-b14d-1806abd45458'),
 
-    ('Técnico 1', 'tecnico-1@email.com', '$2a$10$azEa7sbBi0bSA1zXcW3tTeeVjJ9zGMn4aDoUcawvBnTWeuQECG696', '(11) 99714-0213', 'assets/images/technical-default-profile-avatar.png', 'Ativo', UNHEX('793959ef48a343969a3effd72a80b561'), UNHEX('1a2c47f70c2e4d15aa25e976ddc2f4c9')),
-    ('Técnico 2', 'tecnico-2@email.com', '$2a$10$q2LrzdTXt8CbzqseGZEW7OBh.neFXKJZ/dXAh0fQ0tgGPedyVICcm', '(11) 90274-1124', 'assets/images/technical-default-profile-avatar.png', 'Ativo', UNHEX('793959ef48a343969a3effd72a80b561'), UNHEX('83696f9793a94f688ad1c923e9625633')),
-    ('Técnico 3', 'tecnico-3@email.com', '$2a$10$BvFppX4FKVMm.6y4JE6wk.XB9nGKebCv6GVxbgE9rd6GSJQQwvhde', '(11) 93087-9908', 'assets/images/technical-default-profile-avatar.png', 'Ativo', UNHEX('793959ef48a343969a3effd72a80b561'), UNHEX('3c6ef84eb2fc4f3392ed2dfea0c9866f')),
-    ('Técnico 4', 'tecnico-4@email.com', '$2a$10$/Pt39i8pceGKzSjcteBxxeGR0N9CkLUFWGVHT26ibdr8E8KHD8a6.', '(11) 99020-3697', 'assets/images/technical-default-profile-avatar.png', 'Ativo', UNHEX('793959ef48a343969a3effd72a80b561'), UNHEX('cb0f00f9d9d84d7cb966b174709e9ad3')),
-    ('Técnico 5', 'tecnico-5@email.com', '$2a$10$zKlYsJQrXIKvTWiQbnt9M.RDtjG23UMQr614VDmFKI8EJmCNuwIXa', '(11) 97523-9998', 'assets/images/technical-default-profile-avatar.png', 'Ativo', UNHEX('793959ef48a343969a3effd72a80b561'), UNHEX('c8f515b080224bf0a2f27c8d007cf3ac'));
+    ('Técnico teste 1', 'tecnico-teste1@email.com', '$2a$10$azEa7sbBi0bSA1zXcW3tTeeVjJ9zGMn4aDoUcawvBnTWeuQECG696', '(11) 99714-0213', 'assets/images/technical-default-profile-avatar.png', 'Ativo', 'b64c59c2-994b-4cf6-b68f-b82597a37e21', '16f2a0b5-73bd-4634-90d2-a6f051c8f0e5'),
+    ('Técnico teste 2', 'tecnico-teste2@email.com', '$2a$10$q2LrzdTXt8CbzqseGZEW7OBh.neFXKJZ/dXAh0fQ0tgGPedyVICcm', '(11) 90274-1124', 'assets/images/technical-default-profile-avatar.png', 'Inativo', 'b64c59c2-994b-4cf6-b68f-b82597a37e21', '8146338a-c0a2-43bb-8aac-a8702e884b08'),
+    ('Técnico teste 3', 'tecnico-teste3@email.com', '$2a$10$BvFppX4FKVMm.6y4JE6wk.XB9nGKebCv6GVxbgE9rd6GSJQQwvhde', '(11) 93087-9908', 'assets/images/technical-default-profile-avatar.png', 'Ativo', 'b64c59c2-994b-4cf6-b68f-b82597a37e21', '91e03a80-45fa-4eb8-b34d-b7ab5902d5d5');
 
 INSERT INTO
-    customers (cnpj, user_id, id)
+    customers (cnpj, user_id)
 VALUES
-    ('33.065.964/0001-77', UNHEX('166e6777cb744d0fbcbfc0e87604e556'), UNHEX('a19ddade5ee440f4a4252b4f468f6fce')),
-    ('65.636.158/0001-06', UNHEX('9c01911e5be24a1eb5661fb5c2326b35'), UNHEX('ed93d3aa82574cc8b744c90eb19eaead')),
-    ('57.419.065/0001-93', UNHEX('561b3b44011349559e1ce26d1ef6823e'), UNHEX('278094a2b06a41f6973c7799d9aaca57')),
-    ('93.736.810/0001-91', UNHEX('19da4c953c024224948aa31c90d7be8c'), UNHEX('d03113dc8b5643eaab8c876848bfb13c')),
-    ('67.727.632/0001-22', UNHEX('499997e680f24a948ac9d8ee30aa70dc'), UNHEX('5abbc9836ef54b7884571e2bc06cfb93'));
+    ('33.065.964/0001-77', '8f069839-6943-4c4a-ae8f-6581d9dcf42c'),
+    ('65.636.158/0001-06', '6c2071db-3ebe-49a1-84a8-f728c7d9f45d'),
+    ('57.419.065/0001-93', '99e959f1-067b-4239-b14d-1806abd45458');
 
 INSERT INTO
-    technicians (date_birth, user_id, id)
+    technicians (date_birth, user_id)
 VALUES
-    ('1993-06-03', UNHEX('1a2c47f70c2e4d15aa25e976ddc2f4c9'), UNHEX('7cac5fa9d13340f0b28f54b63d3c8a5e')),
-    ('1995-01-22', UNHEX('83696f9793a94f688ad1c923e9625633'), UNHEX('5eec53009d0e40b7a06acf8d75071eee')),
-    ('1990-08-16', UNHEX('3c6ef84eb2fc4f3392ed2dfea0c9866f'), UNHEX('b56e81ad8b874ff78786e19b33144009')),
-    ('1989-12-10', UNHEX('cb0f00f9d9d84d7cb966b174709e9ad3'), UNHEX('bdba48a582af45ec9d1246a3abf9fc91')),
-    ('1999-07-22', UNHEX('c8f515b080224bf0a2f27c8d007cf3ac'), UNHEX('97e15ace24be4dfa943480b1423dc7b7'));
+    ('1993-06-03', '16f2a0b5-73bd-4634-90d2-a6f051c8f0e5'),
+    ('1995-01-22', '8146338a-c0a2-43bb-8aac-a8702e884b08'),
+    ('1990-08-16', '91e03a80-45fa-4eb8-b34d-b7ab5902d5d5');
+
+INSERT INTO
+    tickets (id, closed_date, code, description, opening_date, search_term, ticket_status, title, customer_id, priority_id, technical_id)
+VALUES
+     ('733aefa2-22df-48d5-a16e-9242cc4156b9',NULL,'129','Chamado teste 1','2024-05-17 00:37:54.953000','129','Pendente','Chamado teste 1','8f069839-6943-4c4a-ae8f-6581d9dcf42c','365fd7c2-4d25-4407-a376-55a7b7aeec43','16f2a0b5-73bd-4634-90d2-a6f051c8f0e5'),
+     ('11d7959a-dcda-4777-8e2b-4b2693e0cde2',NULL,'951','Chamado teste 2','2024-05-17 00:34:24.410000','951','Em Progresso','Chamado teste 2','8f069839-6943-4c4a-ae8f-6581d9dcf42c','0892aa67-ae77-47a8-8f64-64a963314450','8146338a-c0a2-43bb-8aac-a8702e884b08'),
+     ('749fbbe2-2965-4cef-b45a-082f4f4c4ab4',NULL,'753','Chamado teste 3','2024-05-17 00:36:49.100000','753','Resolvido','Chamado teste 3','8f069839-6943-4c4a-ae8f-6581d9dcf42c','152cb1e5-a7b7-411c-ba29-19886798dfbf','8146338a-c0a2-43bb-8aac-a8702e884b08'),
+     ('dd796734-82e6-4b3f-a58a-0acbff4896fd',NULL,'357','Chamado teste 4','2024-05-17 00:39:15.243000','357','Pendente','Chamado teste 4','6c2071db-3ebe-49a1-84a8-f728c7d9f45d','365fd7c2-4d25-4407-a376-55a7b7aeec43','16f2a0b5-73bd-4634-90d2-a6f051c8f0e5'),
+     ('7beea182-8f09-4c7e-b550-abcb4dab6304',NULL,'654','Chamado teste 5','2024-05-17 00:35:35.835000','654','Em Progresso','Chamado teste 5','6c2071db-3ebe-49a1-84a8-f728c7d9f45d','0892aa67-ae77-47a8-8f64-64a963314450','16f2a0b5-73bd-4634-90d2-a6f051c8f0e5'),
+     ('eb98ec1a-33f6-4f17-b3a8-22fe91035fca',NULL,'458','Chamado teste 6','2024-05-17 00:40:45.962000','458','Resolvido','Chamado teste 6','6c2071db-3ebe-49a1-84a8-f728c7d9f45d','152cb1e5-a7b7-411c-ba29-19886798dfbf','8146338a-c0a2-43bb-8aac-a8702e884b08');
