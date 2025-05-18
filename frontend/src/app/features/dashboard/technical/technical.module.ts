@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
 import { TechnicalFormModule } from './form/technical-form.module';
@@ -9,10 +8,9 @@ import { TechnicalRoutingModule } from './technical-routing.module';
 @NgModule({
   declarations: [],
   imports: [
-    CommonModule,
     TechnicalRoutingModule,
     TechnicalFormModule,
-    TechnicalsListModule,
+    TechnicalsListModule
   ]
 })
 export class TechnicalModule { }

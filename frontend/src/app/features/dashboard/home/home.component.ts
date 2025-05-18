@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { LoggedUserDetailsService } from 'src/app/services/logged-user-details/logged-user-details.service';
+import { LoggedUserService } from 'src/app/services/logged-user-details/logged-user-details.service';
 
 @Component({
   selector: 'app-home',
@@ -9,10 +9,10 @@ import { LoggedUserDetailsService } from 'src/app/services/logged-user-details/l
 export class HomeComponent {
 
   constructor(
-    private loggedUserDetailsService: LoggedUserDetailsService
+    private loggedUserService: LoggedUserService
   ){}
 
   getUserName(): string {
-    return this.loggedUserDetailsService.getUserDetails().name;
+    return this.loggedUserService.getUserDetails().name;
   }
 }

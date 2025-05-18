@@ -27,7 +27,7 @@
 
             <!-- Campo de E-mail -->
             <div class="row mb-3 justify-content-center justify-content-lg-start">
-              <mat-form-field class="col-12 col-md-10 col-lg-10">
+              <mat-form-field class="col-12 col-md-10">
                 <mat-label>Digite o E-mail</mat-label>
                 <input matInput placeholder="exemplo@email.com" formControlName="email">
                 <mat-error *ngIf="showControlError('email', 'email')">O e-mail não esta em um formato válido!</mat-error>
@@ -37,7 +37,7 @@
 
             <!-- Campo de Senha -->
             <div class="row mb-3 justify-content-center justify-content-lg-start">
-              <mat-form-field class="col-12 col-md-10 col-lg-10">
+              <mat-form-field class="col-12 col-md-10">
                 <mat-label>Digite a Senha</mat-label>
                 <input matInput [type]="hidePasswordText ? 'password' : 'text'" formControlName="password">
                 <button class="border-0 bg-transparent me-3" mat-icon-button matSuffix (click)="hidePasswordText = !hidePasswordText" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePasswordText">
@@ -47,15 +47,27 @@
               </mat-form-field>
             </div>
 
-            <div class="row mb-3 justify-content-center justify-content-lg-start p-2">
-              <div class="col-12 col-md-10 col-lg-10 alert alert-danger" role="alert" *ngIf="invalidLogin">
+            <div class="row mb-3 justify-content-center justify-content-lg-start p-2" *ngIf="invalidLogin">
+              <div class="col-12 col-md-10 alert alert-danger" role="alert" >
                 E-mail ou senha invalidos!
               </div>
             </div>
 
+            <div class="row mb-3 justify-content-center justify-content-lg-start p-2" *ngIf="serverError">
+              <div class="col-12 col-md-10 alert alert-danger" role="alert">
+                Desculpe, ocorreu um erro interno. Por favor, tente novamente mais tarde.
+              </div>
+            </div>
+
             <div class="row justify-content-center justify-content-lg-start">
-              <div class="col-12 col-md-10 col-lg-5">
+              <div class="col-12 col-md-10">
                 <button class="w-100 btn btn-primary rounded-pill" type="submit">Entrar</button>
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-12 col-md-10 text-center">
+                <span>Ainda não tem uma conta? <a routerLink="/register">cadastre-se!</a></span>
               </div>
             </div>
 

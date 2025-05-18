@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthenticationGuard } from './guards/authentication-guard/authentication.guard';
-import { PageNotFoundModule } from '../features/page-not-found/page-not-found.module';
 import { PageNotFoundComponent } from '../features/page-not-found/page-not-found.component';
 
 const routes: Routes = [
@@ -13,7 +12,10 @@ const routes: Routes = [
   {
     path: 'dashboard',
     loadChildren: () => import('../features/dashboard/dashboard.module').then((m) => m.DashboardModule),
-    canActivate: [AuthenticationGuard]
+    canActivate: [AuthenticationGuard],
+    data: {
+      breadcrumb: "Dashboard"
+    }
   },
   {
     path: "**",

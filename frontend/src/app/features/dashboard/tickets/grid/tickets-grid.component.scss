@@ -7,6 +7,16 @@
   }
 }
 
+:host::ng-deep mat-form-field {
+  .mat-mdc-text-field-wrapper{
+    border-radius: var(--bs-border-radius);
+  }
+
+  .mat-mdc-form-field-subscript-wrapper {
+    height: 0;
+  }
+}
+
 .mat-mdc-table {
   width: 100%;
   min-height: 84%;

@@ -1,18 +1,7 @@
-import { RolesEnum } from "../enums/roles.enum";
-import { UserStatusEnum } from "../enums/user-status.enum";
-import { RoleModel } from "./role.model";
+import { UserModel } from "./user.model";
 
-export interface TechnicalModel {
-  technicalId: string
-  userId: string
-  name: string
+export interface TechnicalModel extends UserModel{
   dateBirth: Date
-  email: string
-  phoneNumber: string
-  password: string
-  profilePicture?: string
-  role: RoleModel
-  userStatus: UserStatusEnum
 }
 
 

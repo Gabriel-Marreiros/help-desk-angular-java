@@ -1,0 +1,43 @@
+<form [formGroup]="userForm">
+  <fieldset class="px-4 px-lg-5 rounded bg-white shadow border border-light-subtle">
+
+    <!-- Foto de perfil -->
+    <legend class="mb-4 text-center">
+      <div class="d-flex flex-column align-items-center gap-1">
+        <img [src]="userForm.get('profilePicture')?.value" alt="Foto de perfil do usuário." width="270px" height="270px" class="rounded-circle object-fit-cover">
+        <button type="button" class="btn btn-secondary btn-sm" *ngIf="userForm.enabled" (click)="activeProfilePictureInput()">Alterar Foto</button>
+        <input type="file" accept=".jpg, .jpeg, .png" #profilePictureInput class="d-none" (change)="handleProfilePictureInput()">
+      </div>
+    </legend>
+
+    <div class="row">
+      <h2 class="fs-2 fw-normal text-center">
+        {{getFormTitle()}}
+      </h2>
+    </div>
+
+    <div class="row mb-5 justify-content-center" *ngIf="userForm.get('userStatus')?.value">
+      <div class="col-6 col-sm-5 col-lg-4">
+        <span class="w-100 fs-5 badge" [ngClass]="{'text-bg-success': userIsActive, 'text-bg-danger': !userIsActive}">
+          {{userForm.get('userStatus')?.value}}
+        </span>
+      </div>
+    </div>
+
+    <ng-content></ng-content>
+
+    <div class="row justify-content-between p-3">
+      <div class="col-auto">
+        <button class="btn btn-secondary" (click)="return()">Voltar</button>
+      </div>
+
+      <div class="col-auto d-flex gap-2 gap-lg-3">
+        <button class="btn btn-success" *ngIf="!isDetailView" (click)="onSaveUser.emit()">Cadastrar</button>
+        <button class="btn btn-success" *ngIf="isDetailView && canEditUser() && formIsBeingEdited" (click)="onUpdateUser.emit()">Salvar Modificações</button>
+        <button class="btn btn-warning" *ngIf="isDetailView && canEditUser() && !formIsBeingEdited" (click)="enableFormEdit()">Editar</button>
+        <button class="btn btn-success" *ngIf="isDetailView && !formIsBeingEdited && !userIsActive && userIsAdmin()" (click)="onChangeUserStatus.emit(userStatus.ACTIVE)">Ativar Usuário</button>
+        <button class="btn btn-danger" *ngIf="isDetailView && !formIsBeingEdited && userIsActive && userIsAdmin()" (click)="onChangeUserStatus.emit(userStatus.INACTIVE)">Inativar Usuário</button>
+      </div>
+    </div>
+  </fieldset>
+</form>

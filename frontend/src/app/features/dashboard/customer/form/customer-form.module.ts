@@ -9,8 +9,10 @@ import { RouterModule } from '@angular/router';
 import { CustomerService } from 'src/app/services/customer/customer.service';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { LoadingModalModule } from 'src/app/shared/loading-modal/loading-modal.module';
-import { GenericModalModule } from 'src/app/shared/generic-modal/generic-modal.module';
+import { LoadingModalModule } from 'src/app/shared/components/loading-modal/loading-modal.module';
+import { GenericModalModule } from 'src/app/shared/components/generic-modal/generic-modal.module';
+import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
+import { UserFormModule } from 'src/app/shared/components/user-form/user-form.module';
 
 
 
@@ -31,10 +33,12 @@ import { GenericModalModule } from 'src/app/shared/generic-modal/generic-modal.m
     MatDialogModule,
     MatProgressSpinnerModule,
     LoadingModalModule,
-    GenericModalModule
+    GenericModalModule,
+    UserFormModule
   ],
   providers: [
-    CustomerService
+    CustomerService,
+    AuthenticationService
   ]
 })
 export class CustomerFormModule { }

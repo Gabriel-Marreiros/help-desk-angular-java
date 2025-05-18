@@ -22,29 +22,24 @@ export class CustomerService {
     })
   }
 
-  getCustomersPaginated(page: number, size: number): Observable<IPage<CustomerModel>> {
-    const url: string = `${this.BASE_URL}/paginated?page=${page}&size=${size}`;
+  getCustomersPaginated(params: {page: number, size: number, status?: string, search?: string}): Observable<IPage<CustomerModel>> {
+    const url: string = `${this.BASE_URL}/paginated`;
 
-    return this.http.get<IPage<CustomerModel>>(url);
+    return this.http.get<IPage<CustomerModel>>(url, {
+      params
+    });
   }
 
-  getCustomerById(customerId: string): Observable<HttpResponse<CustomerModel>> {
-    const url: string = `${this.BASE_URL}/${customerId}`;
+  getCustomerById(id: string): Observable<HttpResponse<CustomerModel>> {
+    const url: string = `${this.BASE_URL}/${id}`;
     return this.http.get<CustomerModel>(url, {
       observe: 'response',
       responseType: 'json'
     });
   }
 
-  saveCustomer(customer: CustomerModel): Observable<HttpResponse<CustomerModel>> {
-    return this.http.post<CustomerModel>(this.BASE_URL, customer, {
-      observe: 'response',
-      responseType: 'json'
-    });
-  }
-
   updateCustomer(updatedCustomer: Partial<CustomerModel>): Observable<HttpResponse<CustomerModel>> {
-    const url = `${this.BASE_URL}/${updatedCustomer.customerId}`;
+    const url = `${this.BASE_URL}/${updatedCustomer.id}`;
 
     return this.http.put<CustomerModel>(url, updatedCustomer, {
       observe: 'response',

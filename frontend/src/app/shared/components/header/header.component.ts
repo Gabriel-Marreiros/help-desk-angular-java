@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
-import { LoggedUserDetailsService } from 'src/app/services/logged-user-details/logged-user-details.service';
+import { LoggedUserService } from 'src/app/services/logged-user-details/logged-user-details.service';
+import { ILoggedUser } from 'src/app/typings/interfaces/logged-user-details';
 
 @Component({
   selector: 'app-header',
@@ -9,15 +10,15 @@ import { LoggedUserDetailsService } from 'src/app/services/logged-user-details/l
 })
 export class HeaderComponent implements OnInit {
 
-  userDetails: any;
+  userDetails!: ILoggedUser;
 
   constructor(
-    private loggedUserDetailsService: LoggedUserDetailsService,
+    private loggedUserService: LoggedUserService,
     private authenticationService: AuthenticationService
   ){}
 
   ngOnInit(): void {
-    this.userDetails = this.loggedUserDetailsService.getUserDetails();
+    this.userDetails = this.loggedUserService.getUserDetails();
   }
 
   logout(): void {

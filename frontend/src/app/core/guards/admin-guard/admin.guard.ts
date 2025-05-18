@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
-import { LoggedUserDetailsService } from 'src/app/services/logged-user-details/logged-user-details.service';
+import { LoggedUserService } from 'src/app/services/logged-user-details/logged-user-details.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,12 +9,12 @@ import { LoggedUserDetailsService } from 'src/app/services/logged-user-details/l
 export class AdminGuard implements CanActivate {
 
   constructor(
-    private loggedUserDetailsService: LoggedUserDetailsService,
+    private loggedUserService: LoggedUserService,
     private router: Router
   ){}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    if(this.loggedUserDetailsService.isAdmin()){
+    if(this.loggedUserService.isAdmin()){
       return true;
     }
     else{

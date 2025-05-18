@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { faHouse, faScrewdriverWrench, faSuitcase, faTicket } from '@fortawesome/free-solid-svg-icons';
-import { LoggedUserDetailsService } from 'src/app/services/logged-user-details/logged-user-details.service';
+import { LoggedUserService } from 'src/app/services/logged-user-details/logged-user-details.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -17,11 +17,11 @@ export class SidebarComponent {
   faScrewdriverWrench = faScrewdriverWrench
 
   constructor(
-    private loggedUserDetailsService: LoggedUserDetailsService
+    private loggedUserService: LoggedUserService
   ){}
 
   canViewButtonNewTicket(): boolean {
-    return this.loggedUserDetailsService.isCustomer() || this.loggedUserDetailsService.isAdmin();
+    return this.loggedUserService.isCustomer() || this.loggedUserService.isAdmin();
   }
 
 }
