@@ -1,5 +1,6 @@
 package br.com.gabrielmarreiros.backend.services;
 
+import br.com.gabrielmarreiros.backend.dto.customer.CustomerFiltersDTO;
 import br.com.gabrielmarreiros.backend.dto.customer.CustomerUpdateRequestDTO;
 import br.com.gabrielmarreiros.backend.exceptions.UserAlreadyRegisteredException;
 import br.com.gabrielmarreiros.backend.exceptions.UserNotFoundException;
@@ -14,9 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ class CustomerServiceTest {
             List<Customer> customerListMock = new ArrayList<>();
             customerListMock.add(customerMock);
 
-            Mockito.when(customerRepository.findAll()).thenReturn(customerListMock);
+            Mockito.when(customerRepository.findAll(Mockito.any(Sort.class))).thenReturn(customerListMock);
 
 //          Action
             List<Customer> serviceResponse = customerService.getAllCustomers();
@@ -65,9 +64,7 @@ class CustomerServiceTest {
         @Test
         void givenAUserThatAlreadyExists_whenRequesting_thenThrowsUserAlreadyRegisteredException(){
 //            Arrange
-            User userMock = Mockito.mock(User.class);
             Customer customerMock = Mockito.mock(Customer.class);
-            Mockito.when(customerMock.getUser()).thenReturn(userMock);
 
             Mockito.when(userService.verifyUserAlreadyRegistered(Mockito.any())).thenReturn(true);
 
@@ -115,14 +112,15 @@ class CustomerServiceTest {
         @Test
         void whenRequesting_thenReturnAListOfCustomersPaginated(){
 //            Arrange
+            CustomerFiltersDTO customerFilters = Mockito.mock(CustomerFiltersDTO.class);
             PageRequest pageRequest = PageRequest.of(0, 1);
             Customer customerMock = Mockito.mock(Customer.class);
             Page<Customer> customersPage = new PageImpl<>(List.of(customerMock), pageRequest, 1);
 
-            Mockito.when(customerRepository.findAll(pageRequest)).thenReturn(customersPage);
+            Mockito.when(customerRepository.findAll(Mockito.any(Example.class), Mockito.eq(pageRequest))).thenReturn(customersPage);
 
 //            Action
-            Page<Customer> methodResponse = customerService.getCustomersPaginated(pageRequest);
+            Page<Customer> methodResponse = customerService.getCustomersPaginated(customerFilters, pageRequest);
 
 //            Assert
             assertThat(methodResponse)
@@ -138,12 +136,10 @@ class CustomerServiceTest {
         void whenRequesting_thenUpdateCustomer() {
 //            Arrange
             UUID customerId = UUID.randomUUID();
-            User userMock = Mockito.mock(User.class);
             CustomerUpdateRequestDTO customerUpdateDTOMock = Mockito.mock(CustomerUpdateRequestDTO.class);
             Customer customerMock = Mockito.mock(Customer.class);
 
-            Mockito.when(customerMock.getUser()).thenReturn(userMock);
-
+            Mockito.when(userService.isUserHimselfOrAdmin(customerId)).thenReturn(true);
             Mockito.when(customerRepository.findById(customerId)).thenReturn(Optional.of(customerMock));
             Mockito.when(customerRepository.save(customerMock)).thenReturn(customerMock);
 
@@ -162,6 +158,7 @@ class CustomerServiceTest {
             CustomerUpdateRequestDTO customerUpdateDTOMock = Mockito.mock(CustomerUpdateRequestDTO.class);
 
             Mockito.when(customerRepository.findById(customerId)).thenReturn(Optional.ofNullable(null));
+            Mockito.when(userService.isUserHimselfOrAdmin(customerId)).thenReturn(true);
 
 //            Assert
             assertThatException()

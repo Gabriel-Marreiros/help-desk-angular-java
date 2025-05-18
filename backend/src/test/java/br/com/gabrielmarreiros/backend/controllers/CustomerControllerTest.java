@@ -1,14 +1,11 @@
 package br.com.gabrielmarreiros.backend.controllers;
 
-import br.com.gabrielmarreiros.backend.dto.customer.CustomerRegisterRequestDTO;
-import br.com.gabrielmarreiros.backend.dto.customer.CustomerRegisterResponseDTO;
-import br.com.gabrielmarreiros.backend.dto.customer.CustomerResponseDTO;
-import br.com.gabrielmarreiros.backend.dto.customer.CustomerUpdateRequestDTO;
-import br.com.gabrielmarreiros.backend.filters.AuthenticationFilter;
+import br.com.gabrielmarreiros.backend.dto.customer.*;
+import br.com.gabrielmarreiros.backend.dto.ticket.TicketResponseDTO;
+import br.com.gabrielmarreiros.backend.filters.JwtAuthenticationFilter;
 import br.com.gabrielmarreiros.backend.mappers.CustomerMapper;
 import br.com.gabrielmarreiros.backend.models.Customer;
-import br.com.gabrielmarreiros.backend.models.Priority;
-import br.com.gabrielmarreiros.backend.models.User;
+import br.com.gabrielmarreiros.backend.models.Ticket;
 import br.com.gabrielmarreiros.backend.services.CustomerService;
 import br.com.gabrielmarreiros.backend.services.TokenJwtService;
 import br.com.gabrielmarreiros.backend.testConfigs.SpringSecurityTestConfig;
@@ -22,10 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -35,9 +29,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-@WebMvcTest(controllers = CustomerController.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {AuthenticationFilter.class})})
+@WebMvcTest(controllers = CustomerController.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {JwtAuthenticationFilter.class})})
 @Import(SpringSecurityTestConfig.class)
 class CustomerControllerTest {
     @MockBean
@@ -81,7 +73,7 @@ class CustomerControllerTest {
             Customer customerMock = Mockito.mock(Customer.class);
             CustomerResponseDTO customerResponseDTOMock = Mockito.mock(CustomerResponseDTO.class);
 
-            Mockito.when(customerService.getCustomersPaginated(Mockito.any())).thenReturn(new PageImpl<Customer>(List.of(customerMock), PageRequest.of(0, 1), 1));
+            Mockito.when(customerService.getCustomersPaginated(Mockito.any(CustomerFiltersDTO.class), Mockito.any(PageRequest.class))).thenReturn(new PageImpl<Customer>(List.of(customerMock), PageRequest.of(0, 1), 1));
             Mockito.when(customerMapper.toResponsePageDTO(Mockito.any())).thenReturn(new PageImpl<CustomerResponseDTO>(List.of(customerResponseDTOMock), PageRequest.of(0, 1), 1));
 
 //            Action
@@ -125,38 +117,6 @@ class CustomerControllerTest {
     }
 
     @Nested
-    class registerCustomer {
-
-        @Test
-        void whenRequesting_thenReturn201Created() throws Exception {
-//            Arrange
-            CustomerRegisterRequestDTO customerRegisterRequestDTOMock = Mockito.mock(CustomerRegisterRequestDTO.class);
-            User userMock = Mockito.mock(User.class);
-            Customer customerMock = Mockito.mock(Customer.class);
-            customerMock.setUser(userMock);
-            CustomerRegisterResponseDTO customerRegisterResponseDTOMock = Mockito.mock(CustomerRegisterResponseDTO.class);
-
-            Mockito.when(customerMapper.toEntity(Mockito.any())).thenReturn(customerMock);
-            Mockito.when(customerService.saveCustomer(Mockito.any())).thenReturn(customerMock);
-            Mockito.when(tokenJwtService.generateToken(Mockito.any())).thenReturn("token");
-            Mockito.when(customerMapper.toRegisterResponseDTO(Mockito.any(Customer.class), Mockito.eq("token"))).thenReturn(customerRegisterResponseDTOMock);
-
-//            Action
-            ResultActions mvcResponse = mvc.perform(
-                MockMvcRequestBuilders
-                    .post("/customers")
-                    .content(objectMapper.writeValueAsString(customerRegisterRequestDTOMock))
-                    .contentType(MediaType.APPLICATION_JSON)
-            );
-
-//            Assert
-            mvcResponse
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
-        }
-    }
-
-    @Nested
     class updateCustomer {
 
         @Test
@@ -190,11 +150,14 @@ class CustomerControllerTest {
     class changeCustomerActiveStatus {
 
         @Test
-        void whenRequesting_thenReturn204NoContent() throws Exception {
+        void whenRequesting_thenReturn200Ok() throws Exception {
 //            Arrange
             UUID customerId = UUID.randomUUID();
+            Customer customerMock = Mockito.mock(Customer.class);
+            CustomerResponseDTO customerResponseDTOMock = Mockito.mock(CustomerResponseDTO.class);
 
-            Mockito.doNothing().when(customerService).changeCustomerActiveStatus(customerId);
+            Mockito.when(customerService.changeCustomerActiveStatus(customerId)).thenReturn(customerMock);
+            Mockito.when(customerMapper.toResponseDTO(customerMock)).thenReturn(customerResponseDTOMock);
 
 //            Action
             ResultActions mvcResponse = mvc.perform(
@@ -204,7 +167,8 @@ class CustomerControllerTest {
 
 //            Assert
             mvcResponse
-                .andExpect(MockMvcResultMatchers.status().isNoContent());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(customerResponseDTOMock)));
         }
     }
 }

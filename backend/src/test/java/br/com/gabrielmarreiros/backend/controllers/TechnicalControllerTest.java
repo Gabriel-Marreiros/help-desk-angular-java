@@ -1,10 +1,9 @@
 package br.com.gabrielmarreiros.backend.controllers;
 
 import br.com.gabrielmarreiros.backend.dto.technical.*;
-import br.com.gabrielmarreiros.backend.filters.AuthenticationFilter;
+import br.com.gabrielmarreiros.backend.filters.JwtAuthenticationFilter;
 import br.com.gabrielmarreiros.backend.mappers.TechnicalMapper;
 import br.com.gabrielmarreiros.backend.models.Technical;
-import br.com.gabrielmarreiros.backend.models.User;
 import br.com.gabrielmarreiros.backend.services.TechnicalService;
 import br.com.gabrielmarreiros.backend.services.TokenJwtService;
 import br.com.gabrielmarreiros.backend.testConfigs.SpringSecurityTestConfig;
@@ -29,7 +28,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.List;
 import java.util.UUID;
 
-@WebMvcTest(controllers = TechnicalController.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {AuthenticationFilter.class})})
+@WebMvcTest(controllers = TechnicalController.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {JwtAuthenticationFilter.class})})
 @Import(SpringSecurityTestConfig.class)
 class TechnicalControllerTest {
     @MockBean
@@ -117,38 +116,6 @@ class TechnicalControllerTest {
     }
 
     @Nested
-    class registerTechnical {
-
-        @Test
-        void whenRequesting_thenReturn201Created() throws Exception{
-//            Arrange
-            TechnicalRegisterRequestDTO technicalRegisterRequestDTOMock = Mockito.mock(TechnicalRegisterRequestDTO.class);
-            User userMock = Mockito.mock(User.class);
-            Technical technicalMock = Mockito.mock(Technical.class);
-            technicalMock.setUser(userMock);
-            TechnicalRegisterResponseDTO technicalRegisterResponseDTOMock = Mockito.mock(TechnicalRegisterResponseDTO.class);
-
-            Mockito.when(technicalMapper.toEntity(Mockito.any())).thenReturn(technicalMock);
-            Mockito.when(technicalService.saveTechnical(Mockito.any())).thenReturn(technicalMock);
-            Mockito.when(tokenJwtService.generateToken(Mockito.any())).thenReturn("token");
-            Mockito.when(technicalMapper.toRegisterResponseDTO(Mockito.any(Technical.class), Mockito.eq("token"))).thenReturn(technicalRegisterResponseDTOMock);
-
-//            Action
-            ResultActions mvcResponse = mvc.perform(
-                    MockMvcRequestBuilders
-                            .post("/technicians")
-                            .content(objectMapper.writeValueAsString(technicalRegisterRequestDTOMock))
-                            .contentType(MediaType.APPLICATION_JSON)
-            );
-
-//            Assert
-            mvcResponse
-                    .andExpect(MockMvcResultMatchers.status().isCreated())
-                    .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
-        }
-    }
-
-    @Nested
     class updateTechnical {
 
         @Test
@@ -207,7 +174,7 @@ class TechnicalControllerTest {
 //            Arrange
             TechnicalWithTicketStatusCountDTO technicalWithTicketStatusCountDTOMock = Mockito.mock(TechnicalWithTicketStatusCountDTO.class);
 
-            Mockito.when(technicalService.getTechniciansWithTicketsStatusCountPaginated(Mockito.any(PageRequest.class))).thenReturn(new PageImpl<TechnicalWithTicketStatusCountDTO>(List.of(technicalWithTicketStatusCountDTOMock), PageRequest.of(0, 1), 1));
+            Mockito.when(technicalService.getTechniciansWithTicketsStatusCountPaginated(Mockito.any(), Mockito.any(PageRequest.class))).thenReturn(new PageImpl<TechnicalWithTicketStatusCountDTO>(List.of(technicalWithTicketStatusCountDTOMock), PageRequest.of(0, 1), 1));
 
 //            Action
             ResultActions mvcResponse = mvc.perform(
@@ -224,14 +191,17 @@ class TechnicalControllerTest {
     }
 
     @Nested
-    class inactivateUser {
+    class changeTechnicalActiveStatus {
 
         @Test
-        void whenRequesting_thenReturn204NoContent() throws Exception {
+        void whenRequesting_thenReturn200Ok() throws Exception {
 //            Arrange
             UUID technicalId = UUID.randomUUID();
+            Technical technicalMock = Mockito.mock(Technical.class);
+            TechnicalResponseDTO technicalResponseDTOMock = Mockito.mock(TechnicalResponseDTO.class);
 
-            Mockito.doNothing().when(technicalService).changeTechnicalActiveStatus(technicalId);
+            Mockito.when(technicalService.changeTechnicalActiveStatus(technicalId)).thenReturn(technicalMock);
+            Mockito.when(technicalMapper.toResponseDTO(technicalMock)).thenReturn(technicalResponseDTOMock);
 
 //            Action
             ResultActions mvcResponse = mvc.perform(
@@ -241,7 +211,8 @@ class TechnicalControllerTest {
 
 //            Assert
             mvcResponse
-                    .andExpect(MockMvcResultMatchers.status().isNoContent());
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(technicalResponseDTOMock)));
         }
     }
 }

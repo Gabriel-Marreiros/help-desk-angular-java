@@ -29,7 +29,7 @@ class TokenJwtServiceTest {
     @BeforeEach
     void setUp(){
 //        Test Token
-        this.testToken = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJIZWxwIERlc2sgQW5ndWxhciAmIEphdmEiLCJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInByb2ZpbGVQaWN0dXJlIjoiVGVzdCBQcm9maWxlIFBpY3R1cmUiLCJyb2xlIjoiVGVzdCBSb2xlIiwicm9sZUlkIjoiYTY1ZTA0ZTUtNjVkOS00ZmFlLWI1MWQtNDUyMzBjYjQ4ZjljIiwibmFtZSI6IlRlc3QgTmFtZSIsInVzZXJJZCI6IjgwOWI4MmFmLWVmYmUtNGRhMy05NmFiLWUxMTdmZmNlZTRkNiJ9.RTguhmAFJXpH72K9TsVrbTxIGVi9Zh_TebwEQNZ_jlo";
+        this.testToken = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJIZWxwIERlc2sgQW5ndWxhciAmIEphdmEiLCJzdWIiOiJ0ZXN0QGVtYWlsLmNvbSIsInByb2ZpbGVQaWN0dXJlIjoiVGVzdCBQcm9maWxlIFBpY3R1cmUiLCJyb2xlIjoiVGVzdCBSb2xlIiwicm9sZUlkIjoiYTY1ZTA0ZTUtNjVkOS00ZmFlLWI1MWQtNDUyMzBjYjQ4ZjljIiwibmFtZSI6IlRlc3QgTmFtZSIsImlkIjoiODA5YjgyYWYtZWZiZS00ZGEzLTk2YWItZTExN2ZmY2VlNGQ2In0.b0PLneCoTPxF2wXXQxrcv1LeKUVJvuR66s0oRo98p0A";
 
 //        Test User
         Role testRole = new Role();
