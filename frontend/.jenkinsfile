@@ -9,6 +9,7 @@ pipeline {
         DOCKER_CONTAINER_NAME = 'help-desk-angular-java-frontend'
         DOCKER_IMAGE_NAME = 'gabrielmarreiros/help-desk-angular-java-frontend'
         DOCKER_IMAGE_TAG = 'latest'
+        API_URL = 'https://www.gabrielmarreiros.com.br/help-desk/api'
     }
 
     stages {
@@ -18,7 +19,7 @@ pipeline {
                 dir('frontend') {
                     echo 'Building the Docker image...'
 
-                    sh 'docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} . --no-cache'
+                    sh 'docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} --build-arg API_URL=${API_URL} --no-cache .'
                 }
             }
         }
