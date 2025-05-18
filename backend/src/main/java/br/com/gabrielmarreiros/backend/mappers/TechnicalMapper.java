@@ -26,14 +26,13 @@ public class TechnicalMapper {
     public TechnicalResponseDTO toResponseDTO(Technical technicalModel){
         return new TechnicalResponseDTO(
                 technicalModel.getId(),
-                technicalModel.getUser().getId(),
-                technicalModel.getUser().getName(),
-                technicalModel.getUser().getEmail(),
-                technicalModel.getUser().getPhoneNumber(),
+                technicalModel.getName(),
+                technicalModel.getEmail(),
+                technicalModel.getPhoneNumber(),
                 technicalModel.getDateBirth(),
-                technicalModel.getUser().getProfilePicture(),
-                technicalModel.getUser().getRole(),
-                technicalModel.getUser().getUserStatus()
+                technicalModel.getProfilePicture(),
+                technicalModel.getRole(),
+                technicalModel.getUserStatus()
         );
     }
 
@@ -47,17 +46,14 @@ public class TechnicalMapper {
     }
 
     public Technical toEntity(TechnicalRegisterRequestDTO technicalRegisterRequest){
-        User user = new User();
-        user.setName(technicalRegisterRequest.name());
-        user.setEmail(technicalRegisterRequest.email());
-        user.setPassword(technicalRegisterRequest.password());
-        user.setPhoneNumber(technicalRegisterRequest.phoneNumber());
-        user.setProfilePicture(technicalRegisterRequest.profilePicture());
-        user.setUserStatus(UserStatusEnum.ACTIVE.getValue());
-
         Technical technical = new Technical();
+        technical.setName(technicalRegisterRequest.name());
+        technical.setEmail(technicalRegisterRequest.email());
         technical.setDateBirth(technicalRegisterRequest.dateBirth());
-        technical.setUser(user);
+        technical.setPassword(technicalRegisterRequest.password());
+        technical.setPhoneNumber(technicalRegisterRequest.phoneNumber());
+        technical.setProfilePicture(technicalRegisterRequest.profilePicture());
+        technical.setUserStatus(UserStatusEnum.ACTIVE.getValue());
 
         return technical;
     }

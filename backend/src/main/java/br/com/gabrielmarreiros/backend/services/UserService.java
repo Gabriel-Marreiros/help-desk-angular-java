@@ -3,9 +3,12 @@ package br.com.gabrielmarreiros.backend.services;
 import br.com.gabrielmarreiros.backend.exceptions.UserNotFoundException;
 import br.com.gabrielmarreiros.backend.models.User;
 import br.com.gabrielmarreiros.backend.repositories.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -21,13 +24,21 @@ public class UserService implements UserDetailsService {
         return this.userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
     }
 
-    public User saveUser(User user){
-        User savedUser = this.userRepository.save(user);
-
-        return savedUser;
-    }
-
     public boolean verifyUserAlreadyRegistered(String email){
         return this.userRepository.findByEmail(email).isPresent();
+    }
+
+    public boolean isUserHimselfOrAdmin(UUID userId){
+        User loggedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if(loggedUser.isAdmin()){
+            return true;
+        }
+
+        if(loggedUser.getId().equals(userId)){
+            return true;
+        }
+
+        return false;
     }
 }

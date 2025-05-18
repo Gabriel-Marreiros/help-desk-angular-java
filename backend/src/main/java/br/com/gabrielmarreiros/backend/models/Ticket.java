@@ -2,10 +2,7 @@ package br.com.gabrielmarreiros.backend.models;
 
 import jakarta.persistence.*;
 
-import java.util.Date;
-import java.util.Random;
-import java.util.StringJoiner;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "tickets")
@@ -43,7 +40,7 @@ public class Ticket {
     private Customer customer;
 
     @ManyToOne
-    @JoinColumn(name = "technical_id", nullable = false)
+    @JoinColumn(name = "technical_id", nullable = true)
     private Technical technical;
 
     private String searchTerm;
@@ -63,15 +60,13 @@ public class Ticket {
     }
 
     public void generateSearchTerm(){
-        var stringJoiner =  new StringJoiner(" ");
-
-        stringJoiner.add(this.code)
+        this.searchTerm =  new StringJoiner(" ")
+                .add(this.code)
                 .add(this.title)
                 .add(this.description)
-                .add(this.technical.getUser().getName())
-                .add(this.customer.getUser().getName());
-
-        this.searchTerm = stringJoiner.toString();
+                .add(this.customer.getName())
+                .add(this.technical != null ? this.technical.getName() : "")
+                .toString();
     }
 
     public void generateTicketCode(){

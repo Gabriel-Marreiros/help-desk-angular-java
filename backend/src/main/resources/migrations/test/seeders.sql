@@ -26,25 +26,25 @@ VALUES
     ('Técnico teste 3', 'tecnico-teste3@email.com', '$2a$10$BvFppX4FKVMm.6y4JE6wk.XB9nGKebCv6GVxbgE9rd6GSJQQwvhde', '(11) 93087-9908', 'assets/images/technical-default-profile-avatar.png', 'Ativo', 'b64c59c2-994b-4cf6-b68f-b82597a37e21', '91e03a80-45fa-4eb8-b34d-b7ab5902d5d5');
 
 INSERT INTO
-    customers (cnpj, user_id, id)
+    customers (cnpj, user_id)
 VALUES
-    ('33.065.964/0001-77', '8f069839-6943-4c4a-ae8f-6581d9dcf42c', '1ec17e60-48b6-457e-8597-54e20c806ef9'),
-    ('65.636.158/0001-06', '6c2071db-3ebe-49a1-84a8-f728c7d9f45d', '42141baf-d7a1-425e-84b3-e6bd3c5e3e93'),
-    ('57.419.065/0001-93', '99e959f1-067b-4239-b14d-1806abd45458', '736dbf5e-aa73-4c44-b731-6e2bc00879e7');
+    ('33.065.964/0001-77', '8f069839-6943-4c4a-ae8f-6581d9dcf42c'),
+    ('65.636.158/0001-06', '6c2071db-3ebe-49a1-84a8-f728c7d9f45d'),
+    ('57.419.065/0001-93', '99e959f1-067b-4239-b14d-1806abd45458');
 
 INSERT INTO
-    technicians (date_birth, user_id, id)
+    technicians (date_birth, user_id)
 VALUES
-    ('1993-06-03', '16f2a0b5-73bd-4634-90d2-a6f051c8f0e5', '351725fa-eacc-4e62-a066-65c1fe02a6f0'),
-    ('1995-01-22', '8146338a-c0a2-43bb-8aac-a8702e884b08', '416f6475-cf96-43f6-aaec-e6f654b69d2d'),
-    ('1990-08-16', '91e03a80-45fa-4eb8-b34d-b7ab5902d5d5', 'ecb4c1a4-6e6d-4a30-ba4b-80ddf035d56d');
+    ('1993-06-03', '16f2a0b5-73bd-4634-90d2-a6f051c8f0e5'),
+    ('1995-01-22', '8146338a-c0a2-43bb-8aac-a8702e884b08'),
+    ('1990-08-16', '91e03a80-45fa-4eb8-b34d-b7ab5902d5d5');
 
 INSERT INTO
     tickets (id, closed_date, code, description, opening_date, search_term, ticket_status, title, customer_id, priority_id, technical_id)
 VALUES
-     ('733aefa2-22df-48d5-a16e-9242cc4156b9',NULL,'129','Chamado teste 1','2024-05-17 00:37:54.953000','129','Pendente','Chamado teste 1','1ec17e60-48b6-457e-8597-54e20c806ef9','365fd7c2-4d25-4407-a376-55a7b7aeec43','351725fa-eacc-4e62-a066-65c1fe02a6f0'),
-     ('11d7959a-dcda-4777-8e2b-4b2693e0cde2',NULL,'951','Chamado teste 2','2024-05-17 00:34:24.410000','951','Em Progresso','Chamado teste 2','1ec17e60-48b6-457e-8597-54e20c806ef9','0892aa67-ae77-47a8-8f64-64a963314450','416f6475-cf96-43f6-aaec-e6f654b69d2d'),
-     ('749fbbe2-2965-4cef-b45a-082f4f4c4ab4',NULL,'753','Chamado teste 3','2024-05-17 00:36:49.100000','753','Resolvido','Chamado teste 3','1ec17e60-48b6-457e-8597-54e20c806ef9','152cb1e5-a7b7-411c-ba29-19886798dfbf','416f6475-cf96-43f6-aaec-e6f654b69d2d'),
-     ('dd796734-82e6-4b3f-a58a-0acbff4896fd',NULL,'357','Chamado teste 4','2024-05-17 00:39:15.243000','357','Pendente','Chamado teste 4','42141baf-d7a1-425e-84b3-e6bd3c5e3e93','365fd7c2-4d25-4407-a376-55a7b7aeec43','351725fa-eacc-4e62-a066-65c1fe02a6f0'),
-     ('7beea182-8f09-4c7e-b550-abcb4dab6304',NULL,'654','Chamado teste 5','2024-05-17 00:35:35.835000','654','Em Progresso','Chamado teste 5','42141baf-d7a1-425e-84b3-e6bd3c5e3e93','0892aa67-ae77-47a8-8f64-64a963314450','351725fa-eacc-4e62-a066-65c1fe02a6f0'),
-     ('eb98ec1a-33f6-4f17-b3a8-22fe91035fca',NULL,'458','Chamado teste 6','2024-05-17 00:40:45.962000','458','Resolvido','Chamado teste 6','42141baf-d7a1-425e-84b3-e6bd3c5e3e93','152cb1e5-a7b7-411c-ba29-19886798dfbf','416f6475-cf96-43f6-aaec-e6f654b69d2d');
+     ('733aefa2-22df-48d5-a16e-9242cc4156b9',NULL,'129','Chamado teste 1','2024-05-17 00:37:54.953000','129','Pendente','Chamado teste 1','8f069839-6943-4c4a-ae8f-6581d9dcf42c','365fd7c2-4d25-4407-a376-55a7b7aeec43','16f2a0b5-73bd-4634-90d2-a6f051c8f0e5'),
+     ('11d7959a-dcda-4777-8e2b-4b2693e0cde2',NULL,'951','Chamado teste 2','2024-05-17 00:34:24.410000','951','Em Progresso','Chamado teste 2','8f069839-6943-4c4a-ae8f-6581d9dcf42c','0892aa67-ae77-47a8-8f64-64a963314450','8146338a-c0a2-43bb-8aac-a8702e884b08'),
+     ('749fbbe2-2965-4cef-b45a-082f4f4c4ab4',NULL,'753','Chamado teste 3','2024-05-17 00:36:49.100000','753','Resolvido','Chamado teste 3','8f069839-6943-4c4a-ae8f-6581d9dcf42c','152cb1e5-a7b7-411c-ba29-19886798dfbf','8146338a-c0a2-43bb-8aac-a8702e884b08'),
+     ('dd796734-82e6-4b3f-a58a-0acbff4896fd',NULL,'357','Chamado teste 4','2024-05-17 00:39:15.243000','357','Pendente','Chamado teste 4','6c2071db-3ebe-49a1-84a8-f728c7d9f45d','365fd7c2-4d25-4407-a376-55a7b7aeec43','16f2a0b5-73bd-4634-90d2-a6f051c8f0e5'),
+     ('7beea182-8f09-4c7e-b550-abcb4dab6304',NULL,'654','Chamado teste 5','2024-05-17 00:35:35.835000','654','Em Progresso','Chamado teste 5','6c2071db-3ebe-49a1-84a8-f728c7d9f45d','0892aa67-ae77-47a8-8f64-64a963314450','16f2a0b5-73bd-4634-90d2-a6f051c8f0e5'),
+     ('eb98ec1a-33f6-4f17-b3a8-22fe91035fca',NULL,'458','Chamado teste 6','2024-05-17 00:40:45.962000','458','Resolvido','Chamado teste 6','6c2071db-3ebe-49a1-84a8-f728c7d9f45d','152cb1e5-a7b7-411c-ba29-19886798dfbf','8146338a-c0a2-43bb-8aac-a8702e884b08');

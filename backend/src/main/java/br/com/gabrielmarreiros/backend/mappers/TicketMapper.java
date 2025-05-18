@@ -25,22 +25,21 @@ public class TicketMapper {
     }
 
     public Ticket toEntity(TicketRequestDTO ticketRequestDTO){
-        Technical technical = new Technical();
-        technical.setId(ticketRequestDTO.technical());
-
-        Customer customer = new Customer();
-        customer.setId(ticketRequestDTO.customer());
-
-        Priority priority = new Priority();
-        priority.setId(ticketRequestDTO.priority());
+        Customer customer = new Customer(ticketRequestDTO.customer());
+        Priority priority = new Priority(ticketRequestDTO.priority());
 
         Ticket ticketEntity = new Ticket();
         ticketEntity.setTitle(ticketRequestDTO.title());
-        ticketEntity.setTechnical(technical);
         ticketEntity.setCustomer(customer);
         ticketEntity.setDescription(ticketRequestDTO.description());
         ticketEntity.setOpeningDate(ticketRequestDTO.openingDate());
         ticketEntity.setPriority(priority);
+        ticketEntity.setTicketStatus(ticketRequestDTO.status());
+
+        if(ticketRequestDTO.technical() != null){
+            Technical technical = new Technical(ticketRequestDTO.technical());
+            ticketEntity.setTechnical(technical);
+        }
 
         return ticketEntity;
     }
@@ -53,7 +52,11 @@ public class TicketMapper {
 
     public TicketResponseDTO toResponseDTO(Ticket ticketEntity){
         CustomerResponseDTO customer = this.customerMapper.toResponseDTO(ticketEntity.getCustomer());
-        TechnicalResponseDTO technical = this.technicalMapper.toResponseDTO(ticketEntity.getTechnical());
+        TechnicalResponseDTO technical = null;
+
+        if(ticketEntity.getTechnical() != null){
+            technical = this.technicalMapper.toResponseDTO(ticketEntity.getTechnical());
+        };
 
         return new TicketResponseDTO(
                 ticketEntity.getId(),

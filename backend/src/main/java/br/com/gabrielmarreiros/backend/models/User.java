@@ -1,5 +1,6 @@
 package br.com.gabrielmarreiros.backend.models;
 
+import br.com.gabrielmarreiros.backend.enums.RolesEnum;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,8 +12,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "users")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User implements UserDetails {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -40,6 +41,10 @@ public class User implements UserDetails {
     private String userStatus;
 
     public User() {}
+
+    public User(UUID id) {
+        this.id = id;
+    }
 
     public User(String name, String email, String password, String phoneNumber, String profilePicture, Role role, String userStatus) {
         this.name = name;
@@ -109,6 +114,10 @@ public class User implements UserDetails {
 
     public void setUserStatus(String userStatus) {
         this.userStatus = userStatus;
+    }
+
+    public boolean isAdmin(){
+        return this.getAuthorities().contains(new SimpleGrantedAuthority(RolesEnum.ADMIN.value()));
     }
 
     @Override

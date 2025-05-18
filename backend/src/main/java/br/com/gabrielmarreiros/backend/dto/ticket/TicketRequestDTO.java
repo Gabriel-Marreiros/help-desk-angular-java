@@ -12,5 +12,6 @@ public record TicketRequestDTO(
    UUID customer,
    String description,
    Date openingDate,
-   UUID priority
+   UUID priority,
+   String status
 ) { }
