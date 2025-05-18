@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TicketsGridComponent } from './grid/tickets-grid.component';
 import { TicketsFormComponent } from './form/tickets-form.component';
+import { NewTicketGuard } from 'src/app/core/guards/new-ticket-guard/new-ticket.guard';
 
 const ticketsRoutes: Routes = [
   {
@@ -11,11 +12,18 @@ const ticketsRoutes: Routes = [
   },
   {
     path: "formulario",
-    component: TicketsFormComponent
+    component: TicketsFormComponent,
+    canActivate: [NewTicketGuard],
+    data: {
+      breadcrumb: "Formulário"
+    }
   },
   {
-    path: "formulario/:id",
-    component: TicketsFormComponent
+    path: "detalhes/:id",
+    component: TicketsFormComponent,
+    data: {
+      breadcrumb: "Detalhes"
+    }
   }
 ];
 

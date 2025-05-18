@@ -1,0 +1,10 @@
+<form [formGroup]="commentForm" (submit)="onSubmit.emit($event)">
+  <angular-editor [config]="editorConfig" formControlName="comment"></angular-editor>
+  <mat-error *ngIf="commentForm.get('comment')?.hasError('required') && commentForm.get('comment')?.touched">O preenchimento do campo "Comentário" é <b>obrigatório!</b></mat-error>
+  <mat-error *ngIf="commentForm.get('comment')?.hasError('maxlength')">O comentário excedeu o limite de 3.000 caracteres</mat-error>
+
+  <div class="mt-2 text-end">
+    <button class="btn btn-light me-2" (click)="onCancel.emit()">Cancelar</button>
+    <button class="btn btn-light" type="submit">Salvar</button>
+  </div>
+</form>

@@ -10,8 +10,9 @@ import { AppComponent } from './app.component';
 import { AuthenticationGuard } from './guards/authentication-guard/authentication.guard';
 import { TokenJwtInterceptor } from './interceptors/token-jwt/token-jwt.interceptor';
 import { JWT_OPTIONS, JwtHelperService } from '@auth0/angular-jwt';
-import { LoggedUserDetailsService } from '../services/logged-user-details/logged-user-details.service';
+import { LoggedUserService } from '../services/logged-user-details/logged-user-details.service';
 import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
+import { PageNotFoundModule } from '../features/page-not-found/page-not-found.module';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
     AppRoutingModule,
     BrowserAnimationsModule,
     FontAwesomeModule,
-    HttpClientModule
+    HttpClientModule,
+    PageNotFoundModule
   ],
   bootstrap: [
     AppComponent
@@ -30,7 +32,7 @@ import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
   providers: [
     AuthenticationService,
     AuthenticationGuard,
-    LoggedUserDetailsService,
+    LoggedUserService,
     JwtHelperService,
     {
       provide: HTTP_INTERCEPTORS,

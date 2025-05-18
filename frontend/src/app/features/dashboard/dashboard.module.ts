@@ -3,8 +3,9 @@ import { NgModule } from '@angular/core';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
-import { HeaderModule } from '../../shared/header/header.module';
+import { HeaderModule } from '../../shared/components/header/header.module';
 import { SidebarModule } from './sidebar/sidebar.module';
+import { BreadcrumbModule } from 'xng-breadcrumb';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { SidebarModule } from './sidebar/sidebar.module';
     HeaderModule,
     SidebarModule,
     DashboardRoutingModule,
+    BreadcrumbModule
   ]
 })
 export class DashboardModule { }

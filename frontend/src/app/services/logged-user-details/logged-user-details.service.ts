@@ -1,18 +1,20 @@
 import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { RolesEnum } from 'src/app/typings/enums/roles.enum';
-import { ILoggedUserDetails } from 'src/app/typings/interfaces/logged-user-details';
+import { ILoggedUser } from 'src/app/typings/interfaces/logged-user-details';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
-export class LoggedUserDetailsService {
+export class LoggedUserService {
 
-  private userDetails!: ILoggedUserDetails;
+  private userDetails!: ILoggedUser;
   private authorizationTokenName: string = environment.authorizationTokenName;
 
-  constructor(private jwtHelper: JwtHelperService) {
+  constructor(
+    private jwtHelper: JwtHelperService
+  ) {
     this.setUserDetailsByToken();
   }
 
@@ -23,10 +25,10 @@ export class LoggedUserDetailsService {
   }
 
   getUserId(): string {
-    return this.userDetails?.userId!;
+    return this.userDetails?.id!;
   }
 
-  getUserDetails(): ILoggedUserDetails {
+  getUserDetails(): ILoggedUser {
     return this.userDetails;
   }
 
@@ -36,6 +38,10 @@ export class LoggedUserDetailsService {
 
   isCustomer(): boolean {
     return this.userDetails?.role == RolesEnum.CUSTOMER;
+  }
+
+  isTechnical(): boolean {
+    return this.userDetails?.role == RolesEnum.TECHNICAL;
   }
 
 }

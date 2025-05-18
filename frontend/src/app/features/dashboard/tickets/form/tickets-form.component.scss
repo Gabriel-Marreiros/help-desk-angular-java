@@ -1,0 +1,30 @@
+:host ::ng-deep .comment-card {
+
+  ul li {
+    list-style: disc;
+  }
+
+  ol li {
+    list-style: decimal;
+  }
+
+  a {
+    text-decoration: underline;
+  }
+}
+
+:host ::ng-deep angular-editor {
+  .angular-editor-toolbar {
+    border-radius: 8px 8px 0 0;
+    border-bottom: 0;
+  }
+
+  .angular-editor-textarea {
+    margin-top: 0;
+    border-radius: 0 0 8px 8px;
+
+    &:focus-visible{
+      outline: none;
+    }
+  }
+}

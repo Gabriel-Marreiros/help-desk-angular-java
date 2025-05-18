@@ -1,111 +1,211 @@
 <section class="container-fluid p-0">
   <div class="row align-items-center justify-content-center">
-    <div class="col-12 col-md-10 col-xl-9 col-xxl-8 ">
 
-      <form [formGroup]="ticketForm" class="p-4 p-lg-5 rounded bg-white shadow">
+    <div class="p-4 p-md-5 p-lg-4 p-xl-5 rounded bg-white shadow">
 
-        <div class="row mb-3 text-center">
-          <h2 class="fs-2 fw-normal">
-            Chamado
-          </h2>
-        </div>
+      <form [formGroup]="ticketForm" class="row ">
 
-        <div class="row mb-5 text-center">
-          <h4 class="p-2 rounded-pill" class="p-2 rounded-pill" [ngClass]="ticketBackgroundStyleMap[getTicketStatus()]">
-            Status: <b>{{getTicketStatus()}}</b>
-          </h4>
-        </div>
+        <div class="col-12 col-lg-7">
+          <div class="row mb-5">
+            <h2 class="fs-2 fw-normal">
+              Chamado
+            </h2>
+          </div>
 
-        <!-- Código -->
-        <div class="row mb-5" *ngIf="!!ticketForm.get('code')?.value">
-          <mat-form-field class="col-12 col-sm-6 col-md-5 col-xl-4 col-xxl-3" appearance="outline">
-            <mat-label>Código</mat-label>
-            <input type="text" matInput formControlName="code">
-          </mat-form-field>
-        </div>
-
-        <div class="row mb-5">
           <!-- Titulo -->
-          <mat-form-field class="col-12" appearance="outline">
-            <mat-label>Titulo</mat-label>
-            <input type="text" matInput formControlName="title">
-            <mat-error *ngIf="ticketForm.get('title')?.hasError('required')">O preenchimento do campo "Titulo" é <b>obrigatório!</b></mat-error>
-          </mat-form-field>
+           <div class="row mb-3">
+             <mat-form-field appearance="outline">
+               <mat-label>Titulo</mat-label>
+               <input type="text" matInput formControlName="title">
+               <mat-error *ngIf="ticketForm.get('title')?.hasError('required')">O preenchimento do campo "Titulo" é <b>obrigatório!</b></mat-error>
+             </mat-form-field>
+           </div>
+
+          <!-- Descrição -->
+           <div class="row">
+             <mat-form-field  appearance="outline">
+               <mat-label>Descrição</mat-label>
+               <textarea matInput formControlName="description" rows="8"></textarea>
+               <mat-error *ngIf="ticketForm.get('description')?.hasError('required')">O preenchimento do campo "Descrição" é <b>obrigatório!</b></mat-error>
+             </mat-form-field>
+           </div>
         </div>
 
-        <div class="row mb-5">
+        <div class="col-12 col-lg-1 mb-3 mb-lg-0 d-flex">
+          <mat-divider class="d-lg-none w-100"></mat-divider>
+          <mat-divider [vertical]="true" class="d-none d-lg-block h-100 mx-auto"></mat-divider>
+        </div>
+
+        <div class="col-12 col-lg-4">
+          <div class="row mb-4 text-center">
+            <h4 class="p-2 rounded-pill" class="p-2 rounded-pill" [ngClass]="ticketBackgroundStyleMap[getTicketStatus()]">
+              Status: <b>{{getTicketStatus()}}</b>
+            </h4>
+          </div>
+
+          <!-- Código -->
+          <div class="row mb-2">
+            <mat-form-field appearance="outline" *ngIf="!!ticketForm.get('code')?.value">
+              <mat-label>Código</mat-label>
+              <input type="text" matInput formControlName="code" readonly [disabled]="true"/>
+            </mat-form-field>
+          </div>
+
           <!-- Cliente -->
-          <mat-form-field class="col-12 col-lg-6 mb-5 mb-lg-0" appearance="outline">
-            <mat-label>Cliente</mat-label>
-            <mat-select formControlName="customer">
-              <mat-option *ngFor="let customer of customerOptions" [value]="customer.customerId">{{customer.name}}</mat-option>
-            </mat-select>
-            <mat-error *ngIf="ticketForm.get('customer')?.hasError('required')">O preenchimento do campo "Cliente" é <b>obrigatório!</b></mat-error>
-          </mat-form-field>
+          <div class="row mb-2">
+            <mat-form-field appearance="outline">
+              <mat-label>Cliente</mat-label>
+              <mat-select formControlName="customer">
+                <mat-option *ngFor="let customer of customerOptions" [value]="customer.id">{{customer.name}}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="ticketForm.get('customer')?.hasError('required')">O preenchimento do campo "Cliente" é <b>obrigatório!</b></mat-error>
+            </mat-form-field>
+          </div>
 
           <!-- Técnicos -->
-          <mat-form-field class="col-12 col-lg-6" appearance="outline">
-            <mat-label>Técnico</mat-label>
-            <mat-select formControlName="technical">
-              <mat-option *ngFor="let technical of technicalOptions" [value]="technical.technicalId">{{technical.name}}</mat-option>
-            </mat-select>
-            <mat-error *ngIf="ticketForm.get('technical')?.hasError('required')">O preenchimento do campo "Técnico" é <b>obrigatório!</b></mat-error>
-          </mat-form-field>
-        </div>
+          <div class="row mb-2" *ngIf="ticketForm.get('technical')?.value">
+            <mat-form-field appearance="outline">
+              <mat-label>Técnico</mat-label>
+              <mat-select formControlName="technical">
+                <mat-option *ngFor="let technical of technicalOptions" [value]="technical.id">{{technical.name}}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="ticketForm.get('technical')?.hasError('required')">O preenchimento do campo "Técnico" é <b>obrigatório!</b></mat-error>
+            </mat-form-field>
+          </div>
 
-        <div class="row mb-5">
+          <!-- Prioridade -->
+          <div class="row mb-2">
+            <mat-form-field appearance="outline">
+              <mat-label>Prioridade</mat-label>
+              <mat-select formControlName="priority">
+                <mat-option *ngFor="let priority of priorityOptions" value={{priority.id}}>{{priority.title}}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="ticketForm.get('priority')?.hasError('required')">O preenchimento do campo "Prioridade" é <b>obrigatório!</b></mat-error>
+            </mat-form-field>
+          </div>
+
           <!-- Data de Abertura -->
-          <mat-form-field class="col-12 col-lg-6" appearance="outline">
-            <mat-label>Data de Abertura</mat-label>
-            <input type="text" matInput [value]="ticketForm.get('openingDate')?.value | date:'dd/MM/yyyy h:mm'" disabled>
-          </mat-form-field>
+          <div class="row mb-2">
+            <mat-form-field appearance="outline">
+              <mat-label>Data de Abertura</mat-label>
+              <input type="text" matInput [value]="ticketForm.get('openingDate')?.value | date:'dd/MM/yyyy h:mm'" disabled readonly>
+            </mat-form-field>
+          </div>
 
           <!-- Data de Fechamento -->
-          <mat-form-field class="col-12 col-lg-6 mt-5 mt-lg-0" appearance="outline" *ngIf="ticketForm.get('closedDate')?.value">
-            <mat-label>Data de Fechamento</mat-label>
-            <input type="text" matInput [value]="ticketForm.get('closedDate')?.value | date:'dd/MM/yyyy h:mm'" disabled>
-          </mat-form-field>
+          <div class="row" *ngIf="ticketForm.get('closedDate')?.value">
+            <mat-form-field appearance="outline" >
+              <mat-label>Data de Fechamento</mat-label>
+              <input type="text" matInput [value]="ticketForm.get('closedDate')?.value | date:'dd/MM/yyyy h:mm'" disabled readonly>
+            </mat-form-field>
+          </div>
         </div>
 
-        <!-- Prioridade -->
-        <div class="row mb-5">
-          <mat-form-field class="col-12 col-lg-4" appearance="outline">
-            <mat-label>Prioridade</mat-label>
-            <mat-select formControlName="priority">
-              <mat-option *ngFor="let priority of priorityOptions" value={{priority.id}}>{{priority.title}}</mat-option>
-            </mat-select>
-            <mat-error *ngIf="ticketForm.get('priority')?.hasError('required')">O preenchimento do campo "Prioridade" é <b>obrigatório!</b></mat-error>
-          </mat-form-field>
-        </div>
-
-        <!-- Descrição -->
-        <div class="row mb-5">
-          <mat-form-field class="col-12" appearance="outline">
-            <mat-label>Descrição</mat-label>
-            <textarea matInput formControlName="description" rows="5"></textarea>
-            <mat-error *ngIf="ticketForm.get('description')?.hasError('required')">O preenchimento do campo "Descrição" é <b>obrigatório!</b></mat-error>
-          </mat-form-field>
-        </div>
-
-        <div class="row justify-content-between">
+        <!-- Botões -->
+        <div class="row justify-content-between mt-4">
           <div class="col-auto">
             <button class="btn btn-secondary" (click)="return()">Voltar</button>
           </div>
 
           <div class="col-auto d-flex gap-2 gap-lg-3">
-            <button *ngIf="canEditTicket()" class="btn btn-warning" (click)="enableFormEditing()">Editar Chamado</button>
+            <button *ngIf="canEditTicket() && !formIsBeingEdited" class="btn btn-warning" (click)="enableFormEditing()">Editar Chamado</button>
             <button *ngIf="formIsBeingEdited" class="btn btn-success" (click)="updateTicket()">Salvar Modificações</button>
 
-            <ng-container [ngSwitch]="ticketForm.get('status')?.value">
-              <button *ngSwitchCase="ticketStatusEnum.PENDING" class="btn btn-warning" (click)="changeStatus(ticketStatusEnum.IN_PROGRESS)" >Iniciar Chamado</button>
-              <button *ngSwitchCase="ticketStatusEnum.IN_PROGRESS" class="btn btn-success" (click)="changeStatus(ticketStatusEnum.RESOLVED)">Finalizar Chamado</button>
-              <button *ngSwitchCase="null || undefined" class="btn btn-primary" (click)="saveTicket()">Abrir Chamado</button>
-            </ng-container>
+            <button *ngIf="ticketStatusIs(ticketStatusEnum.NEW_TICKET) && (isCustomer() || isAdmin()) && isNewTicket" class="btn btn-primary" (click)="saveTicket()">Abrir Chamado</button>
+            <button *ngIf="ticketStatusIs(ticketStatusEnum.NEW_TICKET) && isTechnical()" class="btn btn-warning" (click)="assignTicketTechnical()" >Atribuir Chamado</button>
+            <button *ngIf="ticketStatusIs(ticketStatusEnum.PENDING) && isTicketTechnical()" class="btn btn-warning" (click)="changeTicketStatus(ticketStatusEnum.IN_PROGRESS)" >Iniciar Chamado</button>
+            <button *ngIf="ticketStatusIs(ticketStatusEnum.IN_PROGRESS) && isTicketTechnical()" class="btn btn-success" (click)="changeTicketStatus(ticketStatusEnum.RESOLVED)">Finalizar Chamado</button>
+            <button *ngIf="ticketStatusIs(ticketStatusEnum.IN_PROGRESS) && (isTicketCustomer() || isAdmin())" class="btn btn-danger" (click)="changeTicketStatus(ticketStatusEnum.CANCELED)">Cancelar Chamado</button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Seção de Comentários -->
+      <div class="row col-7 mt-4" *ngIf="isDetailsForm">
+        <!-- Editor -->
+        <div *ngIf="canEditTicket()" class="my-5">
+          <div class="d-flex align-items-start justify-content-center gap-1">
+            <app-user-profile-button
+              [userId]="loggedUser.id"
+              [userRole]="loggedUser.role"
+              [profilePicture]="loggedUser.profilePicture">
+            </app-user-profile-button>
+
+            <div class="w-100">
+              <app-comment-form
+                *ngIf="addingNewComment; else addNewCommentButton"
+                [commentForm]="commentForm"
+                (onSubmit)="saveComment()"
+                (onCancel)="disableNewComment()">
+              </app-comment-form>
+
+              <ng-template #addNewCommentButton>
+                <button class="btn border p-3 w-100 text-start" (click)="addNewComment()">Adicionar comentário</button>
+              </ng-template>
+            </div>
           </div>
         </div>
 
-      </form>
+        <!-- Renderização dos Comentários -->
+        <div>
+          <h3 class="mb-2">Comentários ({{ totalComments }}):</h3>
+
+          <mat-divider/>
+
+          <div class="mt-4 d-flex flex-column gap-4">
+            <ng-container *ngFor="let ticketComment of ticketComments$ | async">
+              <div class="p-3 border rounded shadow-sm comment-card">
+
+                <div class="d-flex align-items-center justify-content-between">
+                  <div class="d-flex align-items-center gap-2">
+                    <app-user-profile-button
+                      [userId]="ticketComment.user.id"
+                      [userName]="ticketComment.user.name"
+                      [userRole]="ticketComment.user.role.title"
+                      [profilePicture]="ticketComment.user.profilePicture!">
+                    </app-user-profile-button>
+
+                    <span class="text-secondary">
+                      {{formateCommentCreatedAt(ticketComment.createdAt)}}
+                    </span>
+
+                    <span *ngIf="ticketComment.edited" class="text-secondary">
+                      Editado
+                    </span>
+                  </div>
+
+                  <div>
+                    <button class="btn p-0" *ngIf="canUpdateComment(ticketComment.user.id) && !isEditing(ticketComment.id)" (click)="enableCommentUpdate(ticketComment)">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="mt-2">
+                  <app-comment-form
+                    *ngIf="isEditing(ticketComment.id); else comment"
+                    [commentForm]="commentForm"
+                    (onSubmit)="updateComment()"
+                    (onCancel)="disableCommentUpdate()">
+                  </app-comment-form>
+
+                  <ng-template #comment>
+                    <div [innerHTML]="ticketComment.comment"></div>
+                  </ng-template>
+                </div>
+
+              </div>
+            </ng-container>
+          </div>
+
+          <div *ngIf="!finishComments" class="mt-3">
+            <button class="w-100 btn btn btn-primary" (click)="loadMoreComments()">Carregar mais comentários</button>
+          </div>
+        </div>
+
+      </div>
     </div>
+
   </div>
 
 </section>

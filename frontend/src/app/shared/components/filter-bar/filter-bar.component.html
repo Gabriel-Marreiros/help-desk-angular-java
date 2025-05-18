@@ -1,0 +1,27 @@
+<div class="row justify-content-between align-items-center gap-3 gap-xxl-0">
+
+  <!-- Sumário -->
+  <div class="col-12 col-xxl-8 rounded shadow bg-white">
+    <div class="row align-items-center justify-content-between row-gap-4 py-3">
+      <ng-content></ng-content>
+    </div>
+
+  </div>
+
+  <!-- Campo de pesquisa -->
+  <div class="col-12 col-xxl-3 p-0">
+    <div class="p-4 d-flex align-items-center justify-content-between rounded bg-white shadow">
+      <div class="d-flex align-items-center gap-2">
+        <mat-icon fontIcon="search"></mat-icon>
+        <input [(ngModel)]="searchFilter" name="searchFilter" type="text" (keyup.enter)="applySearchFilter(searchFilter)" placeholder="Pesquisar" class="focus-ring-light focus-ring border-0">
+      </div>
+
+      <div *ngIf="showClearSearchFilterButton()">
+        <button class="btn p-0" (click)="handleClearSearchFilter()">
+          <mat-icon fontIcon="close" class="align-middle"></mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
