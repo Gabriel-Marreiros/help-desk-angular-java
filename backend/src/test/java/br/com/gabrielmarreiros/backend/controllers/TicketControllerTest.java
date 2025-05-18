@@ -5,7 +5,8 @@ import br.com.gabrielmarreiros.backend.dto.ticket.TicketRequestDTO;
 import br.com.gabrielmarreiros.backend.dto.ticket.TicketResponseDTO;
 import br.com.gabrielmarreiros.backend.dto.ticket.TicketUpdateDTO;
 import br.com.gabrielmarreiros.backend.enums.TicketStatusEnum;
-import br.com.gabrielmarreiros.backend.filters.AuthenticationFilter;
+import br.com.gabrielmarreiros.backend.exceptions.InvalidTicketStatusException;
+import br.com.gabrielmarreiros.backend.filters.JwtAuthenticationFilter;
 import br.com.gabrielmarreiros.backend.mappers.TicketMapper;
 import br.com.gabrielmarreiros.backend.models.Ticket;
 import br.com.gabrielmarreiros.backend.services.TicketService;
@@ -32,7 +33,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.List;
 import java.util.UUID;
 
-@WebMvcTest(controllers = TicketController.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {AuthenticationFilter.class})})
+@WebMvcTest(controllers = TicketController.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {JwtAuthenticationFilter.class})})
 @Import(SpringSecurityTestConfig.class)
 class TicketControllerTest {
     @MockBean
@@ -74,10 +75,11 @@ class TicketControllerTest {
 //            Arrange
             Ticket ticketMock = Mockito.mock(Ticket.class);
             TicketResponseDTO ticketResponseDTOMock = Mockito.mock(TicketResponseDTO.class);
+
             Page<Ticket> ticketsPage = new PageImpl<>(List.of(ticketMock), PageRequest.of(0, 1), 1);
             Page<TicketResponseDTO> ticketsResponsePage = new PageImpl<>(List.of(ticketResponseDTOMock), PageRequest.of(0, 1), 1);
 
-            Mockito.when(ticketService.getTicketsByStatusPaginated(Mockito.any(PageRequest.class), Mockito.any(String.class))).thenReturn(ticketsPage);
+            Mockito.when(ticketService.getTicketsWithFiltersPaginated(Mockito.any(), Mockito.any())).thenReturn(ticketsPage);
             Mockito.when(ticketMapper.toResponsePageDTO(Mockito.any())).thenReturn(ticketsResponsePage);
 
 //            Action
@@ -93,45 +95,6 @@ class TicketControllerTest {
             mvcResponse
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-            Mockito
-                .verify(ticketService, Mockito.atLeastOnce())
-                .getTicketsByStatusPaginated(Mockito.any(PageRequest.class), Mockito.any(String.class));
-
-            Mockito
-                .verify(ticketService, Mockito.never())
-                .getTicketsPaginated(Mockito.any(PageRequest.class));
-        }
-
-        @Test
-        void givenEmptyStatusFilter_whenRequesting_thenReturn200OkAndAPageOfTicketsWithoutStatusFilter() throws Exception {
-//            Arrange
-            Ticket ticketMock = Mockito.mock(Ticket.class);
-            TicketResponseDTO ticketResponseDTOMock = Mockito.mock(TicketResponseDTO.class);
-            Page<Ticket> ticketsPage = new PageImpl<>(List.of(ticketMock), PageRequest.of(0, 1), 1);
-            Page<TicketResponseDTO> ticketsResponsePage = new PageImpl<>(List.of(ticketResponseDTOMock), PageRequest.of(0, 1), 1);
-
-            Mockito.when(ticketService.getTicketsPaginated(Mockito.any(PageRequest.class))).thenReturn(ticketsPage);
-            Mockito.when(ticketMapper.toResponsePageDTO(Mockito.any())).thenReturn(ticketsResponsePage);
-
-//            Action
-            ResultActions mvcResponse = mvc.perform(
-                MockMvcRequestBuilders
-                    .get("/tickets/paginated")
-                    .queryParam("page", "0")
-                    .queryParam("size", "1")
-            );
-
-//            Assert
-            mvcResponse
-                .andExpect(MockMvcResultMatchers.status().isOk());
-
-            Mockito
-                .verify(ticketService, Mockito.atLeastOnce())
-                .getTicketsPaginated(Mockito.any(PageRequest.class));
-
-            Mockito
-                .verify(ticketService, Mockito.never())
-                .getTicketsByStatusPaginated(Mockito.any(PageRequest.class), Mockito.any(String.class));
         }
 
         @Test
@@ -139,7 +102,7 @@ class TicketControllerTest {
             //            Arrange
             String invalidStatus = "Invalid Status";
 
-            Mockito.doCallRealMethod().when(ticketService).getTicketsByStatusPaginated(Mockito.any(PageRequest.class), Mockito.any(String.class));
+            Mockito.when(ticketService.getTicketsWithFiltersPaginated(Mockito.any(), Mockito.any())).thenCallRealMethod();
 
 //            Action
             ResultActions mvcResponse = mvc.perform(
@@ -153,45 +116,8 @@ class TicketControllerTest {
 //            Assert
             mvcResponse
                     .andExpect(MockMvcResultMatchers.status().isBadRequest());
-
-            Mockito
-                    .verify(ticketService, Mockito.atLeastOnce())
-                    .getTicketsByStatusPaginated(Mockito.any(PageRequest.class), Mockito.any(String.class));
-
-            Mockito
-                    .verify(ticketService, Mockito.never())
-                    .getTicketsPaginated(Mockito.any(PageRequest.class));
         }
 
-    }
-
-    @Nested
-    class getTicketsPaginatedBySearchTerm {
-
-        @Test
-        void when_then() throws Exception {
-//            Arrange
-            Ticket ticketMock = Mockito.mock(Ticket.class);
-            TicketResponseDTO ticketResponseDTOMock = Mockito.mock(TicketResponseDTO.class);
-            Page<Ticket> ticketsPage = new PageImpl<>(List.of(ticketMock), PageRequest.of(1, 1), 1);
-            Page<TicketResponseDTO> ticketsResponsePage = new PageImpl<>(List.of(ticketResponseDTOMock), PageRequest.of(1, 1), 1);
-
-            Mockito.when(ticketService.getTicketsBySearchTermPaginated(Mockito.any(PageRequest.class), Mockito.any(String.class))).thenReturn(ticketsPage);
-            Mockito.when(ticketMapper.toResponsePageDTO(Mockito.any())).thenReturn(ticketsResponsePage);
-
-//            Action
-            ResultActions mvcResponse = mvc.perform(
-                    MockMvcRequestBuilders
-                            .get("/tickets/by-search-term/paginated")
-                            .queryParam("page", "1")
-                            .queryParam("size", "1")
-                            .queryParam("searchTerm", "test")
-            );
-
-//            Assert
-            mvcResponse
-                    .andExpect(MockMvcResultMatchers.status().isOk());
-        }
     }
 
     @Nested
@@ -281,11 +207,14 @@ class TicketControllerTest {
     class updateStatus {
 
         @Test
-        void givenAValidStatus_whenRequesting_thenReturn204NoContent() throws Exception {
+        void givenAValidStatus_whenRequesting_thenReturn200Ok() throws Exception {
 //            Arrange
             UUID ticketId = UUID.randomUUID();
+            Ticket ticketMock = Mockito.mock(Ticket.class);
+            TicketResponseDTO ticketResponseDTOMock = Mockito.mock(TicketResponseDTO.class);
 
-            Mockito.doNothing().when(ticketService).updateStatus(Mockito.any(UUID.class), Mockito.any(String.class));
+            Mockito.when(ticketService.updateTicketStatus(Mockito.any(UUID.class), Mockito.any(String.class))).thenReturn(ticketMock);
+            Mockito.when(ticketMapper.toResponseDTO(ticketMock)).thenReturn(ticketResponseDTOMock);
 
 //            Action
             ResultActions mvcResponse = mvc.perform(
@@ -297,7 +226,8 @@ class TicketControllerTest {
 
 //            Assert
             mvcResponse
-                    .andExpect(MockMvcResultMatchers.status().isNoContent());
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(ticketResponseDTOMock)));
         }
 
         @Test
@@ -306,8 +236,7 @@ class TicketControllerTest {
             UUID ticketId = UUID.randomUUID();
             String invalidStatus = "Invalid Status";
 
-//            Mockito.doNothing().when(ticketService).updateStatus(Mockito.any(UUID.class), Mockito.any(String.class));
-            Mockito.doCallRealMethod().when(ticketService).updateStatus(ticketId, invalidStatus);
+            Mockito.when(ticketService.updateTicketStatus(ticketId, invalidStatus)).thenThrow(InvalidTicketStatusException.class);
 
 //            Action
             ResultActions mvcResponse = mvc.perform(

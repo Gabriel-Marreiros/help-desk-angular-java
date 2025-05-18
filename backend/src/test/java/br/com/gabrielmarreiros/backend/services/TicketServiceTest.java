@@ -1,24 +1,32 @@
 package br.com.gabrielmarreiros.backend.services;
 
 import br.com.gabrielmarreiros.backend.dto.ticket.AllTicketsStatusSummaryDTO;
+import br.com.gabrielmarreiros.backend.dto.ticket.TicketFiltersDTO;
 import br.com.gabrielmarreiros.backend.dto.ticket.TicketUpdateDTO;
+import br.com.gabrielmarreiros.backend.enums.RolesEnum;
 import br.com.gabrielmarreiros.backend.enums.TicketStatusEnum;
 import br.com.gabrielmarreiros.backend.exceptions.InvalidTicketStatusException;
 import br.com.gabrielmarreiros.backend.exceptions.TicketNotFoundException;
-import br.com.gabrielmarreiros.backend.models.Customer;
-import br.com.gabrielmarreiros.backend.models.Technical;
-import br.com.gabrielmarreiros.backend.models.Ticket;
+import br.com.gabrielmarreiros.backend.models.*;
 import br.com.gabrielmarreiros.backend.repositories.TicketRepository;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import br.com.gabrielmarreiros.backend.testConfigs.SpringSecurityTestConfig;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithSecurityContext;
+import org.springframework.security.test.context.support.WithUserDetails;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,11 +40,23 @@ class TicketServiceTest {
     @Mock
     private TicketRepository ticketRepository;
     @Mock
-    private TechnicalService technicalService;
-    @Mock
     private CustomerService customerService;
     @InjectMocks
     private TicketService ticketService;
+
+    @BeforeEach
+    public void beforeEach(){
+        User user = new User();
+        user.setRole(new Role(RolesEnum.ADMIN.value()));
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    @AfterEach
+    public void afterEach(){
+        SecurityContextHolder.clearContext();
+    }
 
     @Nested
     class getAllTickets {
@@ -101,15 +121,12 @@ class TicketServiceTest {
         void givenATicket_whenRequesting_thenSaveAndReturnTicket(){
 //            Arrange
             Ticket ticketMock = Mockito.mock(Ticket.class);
-            Technical technicalMock = Mockito.mock(Technical.class);
             Customer customerMock = Mockito.mock(Customer.class);
 
-            Mockito.when(ticketMock.getTechnical()).thenReturn(technicalMock);
             Mockito.when(ticketMock.getCustomer()).thenReturn(customerMock);
 
-            Mockito.when(technicalService.getTechnicalById(Mockito.any())).thenReturn(technicalMock);
             Mockito.when(customerService.getCustomerById(Mockito.any())).thenReturn(customerMock);
-            Mockito.when(ticketRepository.saveAndFlush(Mockito.any())).thenReturn(ticketMock);
+            Mockito.when(ticketRepository.save(Mockito.any())).thenReturn(ticketMock);
 
 //            Action
             Ticket methodResponse = ticketService.saveTicket(ticketMock);
@@ -127,12 +144,18 @@ class TicketServiceTest {
         @Test
         void givenATicketWithInvalidStatus_whenRequesting_thenThrowsInvalidTicketStatusException(){
 //            Arrange
-            UUID ticketId = UUID.randomUUID();
+            UUID ticketId = UUID.fromString("733aefa2-22df-48d5-a16e-9242cc4156b9");
+
+            Ticket ticketMock = Mockito.mock(Ticket.class);
+            Mockito.when(ticketMock.getTicketStatus()).thenReturn(TicketStatusEnum.NEW_TICKET.getValue());
+
             String invalidStatus = "Invalid Status";
+
+            Mockito.when(ticketRepository.findById(ticketId)).thenReturn(Optional.of(ticketMock));
 
 //            Assert
             assertThatException()
-                    .isThrownBy(() -> ticketService.updateStatus(ticketId, invalidStatus))
+                    .isThrownBy(() -> ticketService.updateTicketStatus(ticketId, invalidStatus))
                     .isInstanceOf(InvalidTicketStatusException.class);
         }
 
@@ -142,11 +165,11 @@ class TicketServiceTest {
             UUID ticketId = UUID.randomUUID();
             String validTicketStatus = TicketStatusEnum.IN_PROGRESS.getValue();
 
-            Mockito.when(ticketRepository.updateTicketStatus(ticketId, validTicketStatus)).thenReturn(0);
+            Mockito.when(ticketRepository.findById(ticketId)).thenReturn(Optional.empty());
 
 //            Assert
             assertThatException()
-                    .isThrownBy(() -> ticketService.updateStatus(ticketId, validTicketStatus))
+                    .isThrownBy(() -> ticketService.updateTicketStatus(ticketId, validTicketStatus))
                     .isInstanceOf(TicketNotFoundException.class);
         }
     }
@@ -192,36 +215,35 @@ class TicketServiceTest {
     }
 
     @Nested
-    class getTicketsByStatusPaginated {
+    class getTicketsWithFiltersPaginated {
 
         @Test
-        void givenAValidTicketStatusFilter_whenRequesting_thenReturnAPageOfTicketsFilteredByStatus(){
+        void givenAValidTicketStatusFilter_whenRequesting_thenReturnAPageOfTicketsFiltered(){
 //            Arrange
+            TicketFiltersDTO ticketFilters = Mockito.mock(TicketFiltersDTO.class);
             Ticket ticketMock = Mockito.mock(Ticket.class);
-            String ticketStatusFilter = TicketStatusEnum.IN_PROGRESS.getValue();
             PageRequest pageRequest = PageRequest.of(0, 1);
             Page<Ticket> ticketPage = new PageImpl<>(List.of(ticketMock), pageRequest, 1);
-            Mockito.when(ticketRepository.findByTicketStatus(ticketStatusFilter, pageRequest)).thenReturn(ticketPage);
+            Mockito.when(ticketRepository.findAll(Mockito.any(Example.class), Mockito.eq(pageRequest))).thenReturn(ticketPage);
 
 //            Action
-            Page<Ticket> methodResponse = ticketService.getTicketsByStatusPaginated(pageRequest, ticketStatusFilter);
+            Page<Ticket> methodResponse = ticketService.getTicketsWithFiltersPaginated(ticketFilters, pageRequest);
 
 //            Assert
             assertThat(methodResponse)
                     .isEqualTo(ticketPage);
-
         }
 
         @Test
         void givenAInvalidTicketStatusFilter_whenRequesting_thenThrowsInvalidTicketStatusException(){
 //            Arrange
-            String invalidTicketStatusFilter = "Invalid Status";
+            TicketFiltersDTO ticketFilters = Mockito.mock(TicketFiltersDTO.class);
+            Mockito.when(ticketFilters.status()).thenReturn("Invalid Status");
             PageRequest pageRequestMock = Mockito.mock(PageRequest.class);
-
-
+            
 //            Assert
             assertThatException()
-                    .isThrownBy(() -> ticketService.getTicketsByStatusPaginated(pageRequestMock, invalidTicketStatusFilter))
+                    .isThrownBy(() -> ticketService.getTicketsWithFiltersPaginated(ticketFilters, pageRequestMock))
                     .isInstanceOf(InvalidTicketStatusException.class);
 
         }
@@ -235,9 +257,10 @@ class TicketServiceTest {
 //            Arrange
             UUID ticketId = UUID.randomUUID();
             TicketUpdateDTO ticketUpdateDTOMock = Mockito.mock(TicketUpdateDTO.class);
-            Ticket ticketMock = Mockito.mock(Ticket.class);
 
-            Mockito.doNothing().when(ticketMock).generateSearchTerm();
+            Ticket ticketMock = Mockito.mock(Ticket.class);
+            Mockito.when(ticketMock.getTicketStatus()).thenReturn(TicketStatusEnum.NEW_TICKET.getValue());
+
             Mockito.when(ticketRepository.findById(ticketId)).thenReturn(Optional.of(ticketMock));
             Mockito.when(ticketRepository.save(ticketMock)).thenReturn(ticketMock);
 
@@ -250,25 +273,4 @@ class TicketServiceTest {
         }
     }
 
-    @Nested
-    class getTicketsBySearchTermPaginated {
-
-        @Test
-        void givenASearchTerm_whenRequesting_thenReturnAPageOfTicketsFiltered(){
-//            Arrange
-            Ticket ticketMock = Mockito.mock(Ticket.class);
-            String searchTerm = "Search Term";
-            PageRequest pageRequest = PageRequest.of(0, 1);
-            Page<Ticket> ticketPage = new PageImpl<>(List.of(ticketMock), pageRequest, 1);
-            Mockito.when(ticketRepository.findBySearchTermIgnoreCaseContaining(searchTerm, pageRequest)).thenReturn(ticketPage);
-
-//            Action
-            Page<Ticket> methodResponse = ticketService.getTicketsBySearchTermPaginated(pageRequest, searchTerm);
-
-//            Assert
-            assertThat(methodResponse)
-                    .isEqualTo(ticketPage);
-
-        }
-    }
 }
