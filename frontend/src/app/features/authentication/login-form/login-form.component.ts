@@ -4,8 +4,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
-import { LoggedUserDetailsService } from 'src/app/services/logged-user-details/logged-user-details.service';
-import { LoadingModalComponent } from 'src/app/shared/loading-modal/loading-modal.component';
+import { LoggedUserService } from 'src/app/services/logged-user-details/logged-user-details.service';
+import { LoadingModalComponent } from 'src/app/shared/components/loading-modal/loading-modal.component';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -23,12 +23,13 @@ export class LoginFormComponent implements OnInit {
   currentYear: number = new Date().getFullYear();
   hidePasswordText: boolean = true;
   invalidLogin: boolean = false;
+  serverError: boolean = false;
 
   authorizationTokenName: string = environment.authorizationTokenName;
 
   constructor(
     private authService: AuthenticationService,
-    private loggedUserDetailsService: LoggedUserDetailsService,
+    private loggedUserService: LoggedUserService,
     private dialog: MatDialog,
     private router: Router
   ){}
@@ -42,11 +43,15 @@ export class LoginFormComponent implements OnInit {
     const token: string | null = localStorage.getItem(this.authorizationTokenName);
 
     if(token){
+      const loadingModalRef = this.dialog.open(LoadingModalComponent);
+
       this.authService.validateToken(token).subscribe({
         next: (validated: boolean) => {
           if(validated){
             this.router.navigate(["dashboard", "home"])
           }
+
+          loadingModalRef.close();
         }
       })
     }
@@ -63,17 +68,21 @@ export class LoginFormComponent implements OnInit {
       next: (response) => {
         if(response.status == HttpStatusCode.Ok){
           localStorage.setItem(this.authorizationTokenName, response.body!.token);
-          this.loggedUserDetailsService.setUserDetailsByToken(response.body!.token);
+          this.loggedUserService.setUserDetailsByToken(response.body!.token);
           this.router.navigate(["dashboard"]);
           loadingModalRef.close();
         }
       },
 
       error: (error: HttpErrorResponse) => {
-        if(error.status == HttpStatusCode.Forbidden){
+        if(error.status == HttpStatusCode.BadRequest){
           this.invalidLogin = true;
-          loadingModalRef.close();
         }
+        else{
+          this.serverError = true;
+        }
+
+        loadingModalRef.close();
       }
     })
   }

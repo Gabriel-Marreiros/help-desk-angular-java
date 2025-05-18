@@ -1,0 +1,22 @@
+spring:
+
+  datasource:
+    url: jdbc:h2:mem:help-desk-angular-java
+    username: sa
+    password: pass
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    properties:
+      hibernate.format_sql: true
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      data-locations: classpath:migrations/test/seeders.sql
+
+  flyway:
+    enabled: false
+
+security:
+  secret: "6b13d0dafddb4d9a979082f4e713a9c355eb5cbf672f4542ba"

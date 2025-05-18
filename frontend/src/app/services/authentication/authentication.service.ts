@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ILoginRequest } from 'src/app/typings/interfaces/login-request';
 import { ILoginResponse } from 'src/app/typings/interfaces/login-response';
+import { CustomerModel } from 'src/app/typings/models/customer.model';
+import { TechnicalModel } from 'src/app/typings/models/technical.model';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -25,6 +27,24 @@ export class AuthenticationService {
     return this.http.post<ILoginResponse>(url, login, {
       observe: "response",
       responseType: "json"
+    })
+  }
+
+  registerCustomer(customer: any): Observable<HttpResponse<CustomerModel>> {
+    const url: string = `${this.BASE_URL}/register/customer`;
+
+    return this.http.post<any>(url, customer, {
+      observe: 'response',
+      responseType: 'json'
+    });
+  }
+
+  registerTechnical(user: TechnicalModel): Observable<HttpResponse<TechnicalModel>> {
+    const url: string = `${this.BASE_URL}/register/technical`;
+
+    return this.http.post<TechnicalModel>(url, user, {
+      observe: 'response',
+      responseType: 'json'
     })
   }
 

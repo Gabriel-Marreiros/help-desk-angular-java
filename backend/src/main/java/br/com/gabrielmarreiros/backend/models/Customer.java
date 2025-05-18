@@ -6,32 +6,20 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "customers")
-public class Customer {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-
+@PrimaryKeyJoinColumn(name = "user_id")
+public class Customer extends User {
     @Column(nullable = false)
     private String cnpj;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
     public Customer() {}
 
-    public Customer(User user, String cnpj) {
-        this.user = user;
+    public Customer(UUID id) {
+        super(id);
+    }
+
+    public Customer(String name, String email, String password, String phoneNumber, String profilePicture, Role role, String userStatus, String cnpj) {
+        super(name, email, password, phoneNumber, profilePicture, role, userStatus);
         this.cnpj = cnpj;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public String getCnpj() {
@@ -40,13 +28,5 @@ public class Customer {
 
     public void setCnpj(String cnpj) {
         this.cnpj = cnpj;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 }

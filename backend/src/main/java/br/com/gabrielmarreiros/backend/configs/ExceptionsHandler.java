@@ -1,5 +1,6 @@
-package br.com.gabrielmarreiros.backend.exceptions;
+package br.com.gabrielmarreiros.backend.configs;
 
+import br.com.gabrielmarreiros.backend.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -20,7 +21,7 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
         errorResponse.setInstance(request.getRequest().getRequestURI());
         errorResponse.setStatus(HttpStatus.BAD_REQUEST);
 
-        return ResponseEntity.badRequest().body(errorResponse);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     @ExceptionHandler(InvalidTicketStatusException.class)
@@ -33,7 +34,7 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
         errorResponse.setInstance(request.getRequest().getRequestURI());
         errorResponse.setStatus(HttpStatus.BAD_REQUEST);
 
-        return ResponseEntity.badRequest().body(errorResponse);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     @ExceptionHandler(InvalidTokenException.class)
@@ -46,7 +47,7 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
         errorResponse.setInstance(request.getRequest().getRequestURI());
         errorResponse.setStatus(HttpStatus.BAD_REQUEST);
 
-        return ResponseEntity.badRequest().body(errorResponse);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     @ExceptionHandler(TicketNotFoundException.class)
@@ -57,7 +58,7 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
         errorResponse.setTitle("Chamado não encontrado.");
         errorResponse.setDescription(description);
         errorResponse.setInstance(request.getRequest().getRequestURI());
-        errorResponse.setStatus(HttpStatus.BAD_REQUEST);
+        errorResponse.setStatus(HttpStatus.NOT_FOUND);
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
@@ -72,7 +73,7 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
         errorResponse.setInstance(request.getRequest().getRequestURI());
         errorResponse.setStatus(HttpStatus.BAD_REQUEST);
 
-        return ResponseEntity.badRequest().body(errorResponse);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
@@ -83,9 +84,49 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
         errorResponse.setTitle("Usuário não encontrado.");
         errorResponse.setDescription(description);
         errorResponse.setInstance(request.getRequest().getRequestURI());
-        errorResponse.setStatus(HttpStatus.BAD_REQUEST);
+        errorResponse.setStatus(HttpStatus.NOT_FOUND);
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ErrorResponse> handleUnauthorizedException(ServletWebRequest request, UserNotFoundException ex){
+        String description = ex.getMessage() != null ? ex.getMessage() : "Ação não autorizada.";
+
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setTitle("Ação não autorizada.");
+        errorResponse.setDescription(description);
+        errorResponse.setInstance(request.getRequest().getRequestURI());
+        errorResponse.setStatus(HttpStatus.UNAUTHORIZED);
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+    }
+
+    @ExceptionHandler(TicketCommentNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleTicketCommentNotFoundException(ServletWebRequest request, UserNotFoundException ex){
+        String description = ex.getMessage() != null ? ex.getMessage() : "Comentário não encontrado.";
+
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setTitle("O comentário não foi encontrado.");
+        errorResponse.setDescription(description);
+        errorResponse.setInstance(request.getRequest().getRequestURI());
+        errorResponse.setStatus(HttpStatus.NOT_FOUND);
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+
+    @ExceptionHandler(InvalidRequestException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidRequestException(ServletWebRequest request, InvalidLoginException ex){
+        String description = ex.getMessage() != null ? ex.getMessage() : "Rquisição inválida!";
+
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setTitle("Requisição inválida!");
+        errorResponse.setDescription(description);
+        errorResponse.setInstance(request.getRequest().getRequestURI());
+        errorResponse.setStatus(HttpStatus.BAD_REQUEST);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
 }

@@ -2,11 +2,13 @@
 
   <app-header></app-header>
 
-  <div class="row w-100 m-0 teste">
+  <div class="row w-100 m-0 dashboard-container">
 
-    <app-sidebar class="col-12 col-lg-2 p-0 position-fixed z-3 side-bar"></app-sidebar>
+    <app-sidebar class="col-12 col-lg-2 p-0 position-fixed side-bar"></app-sidebar>
 
     <div class="col-12 col-lg-10 offset-lg-2 p-4 p-xl-5">
+      <xng-breadcrumb class="mb-5 fs-4"></xng-breadcrumb>
+
       <router-outlet></router-outlet>
     </div>
 
@@ -17,8 +19,6 @@
         </h5>
       </footer>
     </div>
-
-    <!-- <div class="mb-5 d-lg-none"></div> -->
 
   </div>
 

@@ -22,9 +22,14 @@ export class TechnicalService {
   }
 
   getTechnicalsPaginated(page: number, size: number): Observable<IPage<TechnicalModel>>{
-    const url: string = `${this.BASE_URL}/paginated?page=${page}&size=${size}`;
+    const url: string = `${this.BASE_URL}/paginated`;
 
-    return this.http.get<IPage<TechnicalModel>>(url);
+    return this.http.get<IPage<TechnicalModel>>(url, {
+      params: {
+        page,
+        size
+      }
+    });
   }
 
   getAllTechnicalWithTicketsStatusCount(): Observable<Array<TechnicalModel>> {
@@ -33,10 +38,12 @@ export class TechnicalService {
     return this.http.get<Array<TechnicalModel>>(url);
   }
 
-  getTechniciansWithTicketsStatusCountPaginated(page: number, size: number): Observable<IPage<ITechnicalWithTicketStatusCount>> {
-    const url: string = `${this.BASE_URL}/with-tickets-status-count/paginated?page=${page}&size=${size}`;
+  getTechniciansWithTicketsStatusCountPaginated(params: {page: number, size: number, status?: string, search?: string}): Observable<IPage<ITechnicalWithTicketStatusCount>> {
+    const url: string = `${this.BASE_URL}/with-tickets-status-count/paginated`;
 
-    return this.http.get<IPage<ITechnicalWithTicketStatusCount>>(url);
+    return this.http.get<IPage<ITechnicalWithTicketStatusCount>>(url, {
+      params
+    });
   }
 
   getAllActiveTechnicals(): Observable<HttpResponse<Array<TechnicalModel>>> {
@@ -55,15 +62,8 @@ export class TechnicalService {
     });
   }
 
-  saveTechnical(user: TechnicalModel): Observable<HttpResponse<ArrayBuffer>> {
-    return this.http.post<ArrayBuffer>(this.BASE_URL, user, {
-      observe: 'response',
-      responseType: 'json'
-    })
-  }
-
   updateTechnical(updatedTechnical: Partial<TechnicalModel>): Observable<HttpResponse<TechnicalModel>> {
-    const url = `${this.BASE_URL}/${updatedTechnical.technicalId}`;
+    const url = `${this.BASE_URL}/${updatedTechnical.id}`;
 
     return this.http.put<TechnicalModel>(url, updatedTechnical, {
       observe: 'response',

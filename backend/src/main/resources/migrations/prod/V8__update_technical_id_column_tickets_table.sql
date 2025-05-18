@@ -1,0 +1,1 @@
+ALTER TABLE tickets MODIFY COLUMN technical_id binary(16) NULL;

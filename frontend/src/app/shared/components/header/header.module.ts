@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from './header.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { UserProfileButtonModule } from 'src/app/shared/user-profile-button/user-profile-button.module';
+import { UserProfileButtonModule } from 'src/app/shared/components/user-profile-button/user-profile-button.module';
 import { AuthenticationService } from 'src/app/services/authentication/authentication.service';
 import { RouterModule } from '@angular/router';
 

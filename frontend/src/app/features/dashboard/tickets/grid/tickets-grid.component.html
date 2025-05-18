@@ -1,52 +1,47 @@
 <section>
-  <!-- Sumário -->
-  <div class="row justify-content-between gap-3 gap-xxl-0 mb-5">
+  <app-filter-bar>
+    <mat-form-field appearance="fill" class="col-12 col-sm-6 col-lg-3">
+      <mat-label>Cliente</mat-label>
+      <mat-select [(ngModel)]="customerFilter" name="customerFilter" (valueChange)="handleSelectFilter({customer: $event})">
+        <mat-option>Limpar filtro</mat-option>
+        <mat-option *ngIf="loggedUserService.isCustomer()" [value]="loggedUserService.getUserId()">Meu usuário</mat-option>
+        <mat-option *ngFor="let customerOption of customerOptions" [value]="customerOption.id">{{customerOption.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-    <!-- Sumário -->
-    <div class="col-12 col-xxl-8 py-3 rounded shadow bg-white">
-      <div class="row align-items-center">
-        <div class="col-12 col-md-auto mb-4 mb-md-0">
-          <span class="fs-6">Sumário:</span>
-        </div>
+    <mat-form-field appearance="fill" class="col-12 col-sm-6 col-lg-3">
+      <mat-label>Técnico</mat-label>
+      <mat-select [(ngModel)]="technicalFilter" name="technicalFilter" (valueChange)="handleSelectFilter({technical: $event})">
+        <mat-option>Limpar filtro</mat-option>
+        <mat-option *ngIf="loggedUserService.isTechnical()" [value]="loggedUserService.getUserId()">Meu usuário</mat-option>
+        <mat-option *ngFor="let technicalOption of technicalOptions" [value]="technicalOption.id">{{technicalOption.name}}</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-        <div class="col-6 col-sm-auto mb-2 mb-sm-0">
-          <a class="btn btn-light border border-light-subtle" [routerLink]="['./']" [queryParams]="{status: 'todos'}" [routerLinkActive]="['bg-secondary', 'text-white']">Todos</a>
-        </div>
+    <mat-form-field appearance="fill" class="col-12 col-sm-6 col-lg-3">
+      <mat-label>Status</mat-label>
+      <mat-select [(ngModel)]="statusFilter" name="statusFilter" (valueChange)="handleSelectFilter({status: $event})">
+        <mat-option>Limpar filtro</mat-option>
+        <mat-option [value]="ticketStatusEnum.PENDING">{{ticketStatusEnum.PENDING}}</mat-option>
+        <mat-option [value]="ticketStatusEnum.IN_PROGRESS">{{ticketStatusEnum.IN_PROGRESS}}</mat-option>
+        <mat-option [value]="ticketStatusEnum.RESOLVED">{{ticketStatusEnum.RESOLVED}}</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-        <div class="col-6 col-sm-auto mb-2 mb-sm-0">
-          <a class="btn btn-light border border-light-subtle" [routerLink]="['./']" [queryParams]="{status: ticketStatusEnum.IN_PROGRESS}" [routerLinkActive]="['bg-secondary', 'text-white']">Em Progresso - <b>{{ticketsStatusSummary.inProgress}}</b></a>
-        </div>
+    <mat-form-field appearance="fill" class="col-12 col-sm-6 col-lg-3">
+      <mat-label>Prioridade</mat-label>
+      <mat-select [(ngModel)]="priorityFilter" name="priorityFilter" (valueChange)="handleSelectFilter({priority: $event})">
+        <mat-option>Limpar filtro</mat-option>
+        <mat-option *ngFor="let priorityOption of priorityOptions" [value]="priorityOption.id">{{priorityOption.title}}</mat-option>
+      </mat-select>
+    </mat-form-field>
 
-        <div class="col-6 col-sm-auto">
-          <a class="btn btn-light border border-light-subtle" [routerLink]="['./']" [queryParams]="{status: ticketStatusEnum.PENDING}" [routerLinkActive]="['bg-secondary', 'text-white']">Pendentes - <b>{{ticketsStatusSummary.pending}}</b></a>
-        </div>
+    <!-- <div>
+      <button class="btn btn-success border" (click)="exportAllTicketsToExcel()">Exportar Excel</button>
+    </div> -->
+  </app-filter-bar>
 
-        <div class="col-6 col-sm-auto">
-          <a class="btn btn-light border border-light-subtle" [routerLink]="['./']" [queryParams]="{status: ticketStatusEnum.RESOLVED}" [routerLinkActive]="['bg-secondary', 'text-white']">Resolvido - <b>{{ticketsStatusSummary.resolved}}</b></a>
-        </div>
-
-        <div class="col-12 px-3 d-lg-none mb-3 mt-4 mx-auto">
-          <mat-divider></mat-divider>
-        </div>
-
-        <div class="col-12 col-lg-auto ms-auto">
-          <button class="btn btn-success border" (click)="exportAllTicketsToExcel()">Exportar Excel</button>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Campo de pesquisa -->
-    <div class="col-12 col-xxl-3 p-0">
-      <div class="p-4 d-flex align-items-center gap-2 rounded bg-white shadow">
-        <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="search"></mat-icon>
-        <input #searchFilterInput [(ngModel)]="searchFilter" type="text" name="search" (keyup.enter)="handleSearch()" placeholder="Pesquisar" class="focus-ring-light focus-ring border-0">
-      </div>
-    </div>
-
-  </div>
-
-  <div class="row">
+  <div class="row mt-4">
     <div class="col-12 table-container rounded shadow p-0">
       <!-- Tabela -->
       <mat-table [dataSource]="matTableDataSource" matSort class="mat-elevation-z8 w-100" >
@@ -67,7 +62,12 @@
         <ng-container matColumnDef="customer">
           <mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by number"> Cliente </mat-header-cell>
           <mat-cell *matCellDef="let element">
-            <app-user-profile-button [userDetails]="element.customer"></app-user-profile-button>
+            <app-user-profile-button
+              [id]="element.customer.id"
+              [userName]="element.customer.name"
+              [userRole]="element.customer.role.title"
+              [profilePicture]="element.customer.profilePicture">
+            </app-user-profile-button>
           </mat-cell>
         </ng-container>
 
@@ -75,7 +75,21 @@
         <ng-container matColumnDef="technical">
           <mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by number"> Técnico </mat-header-cell>
           <mat-cell *matCellDef="let element">
-            <app-user-profile-button [userDetails]="element.technical"></app-user-profile-button>
+
+            <app-user-profile-button
+              *ngIf="element.technical; else templateName"
+              [id]="element.technical.id"
+              [userName]="element.technical.name"
+              [userRole]="element.technical.role.title"
+              [profilePicture]="element.technical.profilePicture">
+            </app-user-profile-button>
+
+            <ng-template #templateName>
+              <span class="fst-italic">
+                Nenhum técnico atribuído
+              </span>
+            </ng-template>
+
           </mat-cell>
         </ng-container>
 
@@ -97,7 +111,7 @@
         <ng-container matColumnDef="status">
           <mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by number"> Status </mat-header-cell>
           <mat-cell *matCellDef="let element">
-            <span class="rounded-pill py-1 px-3" [ngClass]="defineStatusColor(element.ticketStatus)">{{element.ticketStatus}}</span>
+            <span class="rounded-pill py-1 px-3 text-center" [ngClass]="defineStatusColor(element.ticketStatus)">{{element.ticketStatus}}</span>
           </mat-cell>
         </ng-container>
 
@@ -111,7 +125,7 @@
         [pageSize]="initialPageSize"
         [length]="ticketsTotalLength"
         [showFirstLastButtons]="true"
-        (page)="handlePageChange($event)"
+        (page)="getTicketsPaginated($event)"
         aria-label="Select page of periodic elements">
       </mat-paginator>
     </div>

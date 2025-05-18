@@ -1,9 +1,9 @@
 spring:
 
   datasource:
-    url: jdbc:h2:tcp://localhost/mem:test
+    url: jdbc:h2:file:./src/main/resources/h2/dev/help-desk-angular-java-database;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE
     username: sa
-    password:
+    password: pass
     driver-class-name: org.h2.Driver
 
   jpa:
@@ -13,11 +13,18 @@ spring:
       ddl-auto: update
     properties:
       hibernate.format_sql: true
+    defer-datasource-initialization: true
 
   h2:
     console:
       enable: true
       path: /h2-console
+
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:migrations/dev/seeders.sql
+      continue-on-error: true
 
   flyway:
     enabled: false

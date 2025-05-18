@@ -1,8 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { RolesEnum } from 'src/app/typings/enums/roles.enum';
-import { CustomerModel } from 'src/app/typings/models/customer.model';
-import { TechnicalModel } from 'src/app/typings/models/technical.model';
+import { UserModel } from 'src/app/typings/models/user.model';
 
 @Component({
   selector: 'app-user-profile-button',
@@ -10,9 +9,17 @@ import { TechnicalModel } from 'src/app/typings/models/technical.model';
   styleUrls: ['./user-profile-button.component.scss']
 })
 export class UserProfileButtonComponent {
+  @Input()
+  userRole!: RolesEnum;
 
   @Input()
-  userDetails!: TechnicalModel | CustomerModel;
+  userId!: string;
+
+  @Input()
+  userName!: string;
+
+  @Input()
+  profilePicture!: string;
 
   @Input()
   textColor: 'text-black' | 'text-white' = 'text-black';
@@ -22,9 +29,8 @@ export class UserProfileButtonComponent {
   ){}
 
   openUserDetails(): void {
-    let formType: string = this.userDetails.role.title == RolesEnum.TECHNICAL ? "tecnicos" : "clientes";
-    let userId: string = this.userDetails.userId!;
+    let formType: string = this.userRole == RolesEnum.TECHNICAL ? "tecnicos" : "clientes";
 
-    this.router.navigate(["dashboard", formType, "detalhes", userId]);
+    this.router.navigate(["dashboard", formType, "detalhes", this.userId]);
   }
 }

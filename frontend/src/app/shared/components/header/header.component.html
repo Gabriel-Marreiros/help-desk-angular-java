@@ -18,7 +18,13 @@
         </button>
       </li>
       <li matTooltip="Editar Conta" class="align-self-center">
-        <app-user-profile-button [userDetails]="userDetails" textColor="text-white"></app-user-profile-button>
+        <app-user-profile-button
+          [userId]="userDetails.id"
+          [userName]="userDetails.name"
+          [userRole]="userDetails.role"
+          [profilePicture]="userDetails.profilePicture"
+          textColor="text-white">
+        </app-user-profile-button>
       </li>
     </ul>
   </nav>

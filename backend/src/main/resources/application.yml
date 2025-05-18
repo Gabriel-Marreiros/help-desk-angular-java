@@ -4,3 +4,22 @@ spring:
 
   application:
     name: "Help Desk Angular & Java"
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+logging:
+  level:
+    br.com.gabrielmarreiros: DEBUG
+
+app:
+  version: @project.version@
