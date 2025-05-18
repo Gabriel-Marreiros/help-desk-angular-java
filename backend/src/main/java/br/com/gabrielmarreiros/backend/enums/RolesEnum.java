@@ -11,11 +11,8 @@ public enum RolesEnum {
         this.value = value;
     }
 
-    public String getValue(){
+    public String value(){
         return this.value;
     }
 
-    public String getRolePrefix(){
-        return "ROLE_" + this.value;
-    }
 }

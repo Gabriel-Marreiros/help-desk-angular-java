@@ -6,8 +6,7 @@ import br.com.gabrielmarreiros.backend.models.Role;
 import java.util.UUID;
 
 public record CustomerResponseDTO(
-    UUID customerId,
-    UUID userId,
+    UUID id,
     String name,
     String email,
     String phoneNumber,

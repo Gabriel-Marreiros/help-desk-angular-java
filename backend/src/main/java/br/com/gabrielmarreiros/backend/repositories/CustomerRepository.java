@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -15,11 +16,12 @@ public interface CustomerRepository extends JpaRepository<Customer, UUID> {
     @Modifying
     @Query("""
         UPDATE
-            User u
+            Customer c
         SET
-            u.userStatus = CASE WHEN u.userStatus = 'Ativo' THEN 'Inativo' ELSE 'Ativo' END
+            c.userStatus = CASE WHEN c.userStatus = 'Ativo' THEN 'Inativo' ELSE 'Ativo' END
         WHERE
-            u.id = :id
+            c.id = :id
     """)
     int changeCustomerActiveStatus(@Param("id") UUID id);
+
 }

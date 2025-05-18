@@ -1,17 +1,17 @@
 package br.com.gabrielmarreiros.backend.services;
 
+import br.com.gabrielmarreiros.backend.dto.customer.CustomerFiltersDTO;
 import br.com.gabrielmarreiros.backend.dto.customer.CustomerUpdateRequestDTO;
 import br.com.gabrielmarreiros.backend.enums.RolesEnum;
+import br.com.gabrielmarreiros.backend.exceptions.UnauthorizedException;
 import br.com.gabrielmarreiros.backend.exceptions.UserAlreadyRegisteredException;
 import br.com.gabrielmarreiros.backend.exceptions.UserNotFoundException;
 import br.com.gabrielmarreiros.backend.models.Customer;
 import br.com.gabrielmarreiros.backend.models.Role;
-import br.com.gabrielmarreiros.backend.models.Technical;
 import br.com.gabrielmarreiros.backend.models.User;
 import br.com.gabrielmarreiros.backend.repositories.CustomerRepository;
 import br.com.gabrielmarreiros.backend.repositories.RoleRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +35,8 @@ public class CustomerService {
     }
 
     public List<Customer> getAllCustomers() {
-        List<Customer> customers = this.customerRepository.findAll();
+        Sort sort = Sort.by(Sort.Direction.ASC, "name");
+        List<Customer> customers = this.customerRepository.findAll(sort);
 
         return customers;
     }
@@ -43,51 +44,80 @@ public class CustomerService {
     @Transactional
     public Customer saveCustomer(Customer customer) {
 
-        boolean userAlreadyRegistered = this.userService.verifyUserAlreadyRegistered(customer.getUser().getEmail());
+        boolean userAlreadyRegistered = this.userService.verifyUserAlreadyRegistered(customer.getEmail());
 
         if (userAlreadyRegistered) {
             throw new UserAlreadyRegisteredException();
         }
 
-        Role role = this.roleRepository.findByTitle(RolesEnum.CUSTOMER.getValue()).get();
-        customer.getUser().setRole(role);
+        Role role = this.roleRepository.findByTitle(RolesEnum.CUSTOMER.value()).get();
+        customer.setRole(role);
 
-        String encodedPassword = this.passwordEncoder.encode(customer.getUser().getPassword());
-        customer.getUser().setPassword(encodedPassword);
-
-        User savedUser = this.userService.saveUser(customer.getUser());
-
-        customer.setUser(savedUser);
+        String encodedPassword = this.passwordEncoder.encode(customer.getPassword());
+        customer.setPassword(encodedPassword);
 
         Customer savedCustumer = this.customerRepository.save(customer);
 
         return savedCustumer;
     }
 
-    public Customer getCustomerById(UUID id) {
-        Customer customer = this.customerRepository.findById(id)
-                                                    .orElseThrow(() -> new UserNotFoundException("Usuário não encontrado"));
+    public Customer getCustomerById(UUID userId) {
+        Customer customer = this.customerRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
 
         return customer;
     }
 
-    public Page<Customer> getCustomersPaginated(PageRequest pageRequest) {
-        return this.customerRepository.findAll(pageRequest);
+    public Page<Customer> getCustomersPaginated(CustomerFiltersDTO customerFilters, PageRequest pageRequest) {
+        Customer customerFilter = new Customer();
+        customerFilter.setUserStatus(customerFilters.status());
+        customerFilter.setName(customerFilters.search());
+
+        ExampleMatcher filterMatcher = ExampleMatcher.matching().withMatcher("name", matcher -> matcher.contains().ignoreCase());
+
+        Example<Customer> customerExample = Example.of(customerFilter, filterMatcher);
+
+        Page<Customer> customersPage = this.customerRepository.findAll(customerExample, pageRequest);
+
+        return customersPage;
     }
 
     @Transactional
-    public void changeCustomerActiveStatus(UUID id){
-        int rows = this.customerRepository.changeCustomerActiveStatus(id);
+    public Customer changeCustomerActiveStatus(UUID userId){
+        boolean userExists = this.customerRepository.existsById(userId);
+
+        if(!userExists){
+            throw new UserNotFoundException();
+        }
+
+        boolean canChangeActiveStatus = this.userService.isUserHimselfOrAdmin(userId);
+
+        if(!canChangeActiveStatus){
+            throw new UnauthorizedException();
+        }
+
+        this.customerRepository.changeCustomerActiveStatus(userId);
+
+        Customer customer = this.customerRepository.findById(userId).get();
+
+        return customer;
     }
 
     @Transactional
-    public Customer updateCustomer(UUID id, CustomerUpdateRequestDTO customerUpdate) {
-        Customer customer = this.customerRepository.findById(id).orElseThrow(UserNotFoundException::new);
+    public Customer updateCustomer(UUID userId, CustomerUpdateRequestDTO customerUpdate) {
+        boolean canUpdateCustomer = this.userService.isUserHimselfOrAdmin(userId);
 
-        customer.getUser().setName(customerUpdate.name());
-        customer.getUser().setEmail(customerUpdate.email());
-        customer.getUser().setPhoneNumber(customerUpdate.phoneNumber());
-        customer.getUser().setProfilePicture(customerUpdate.profilePicture());
+        if(!canUpdateCustomer){
+            throw new UnauthorizedException();
+        }
+
+        Customer customer = this.customerRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        customer.setName(customerUpdate.name());
+        customer.setEmail(customerUpdate.email());
+        customer.setPhoneNumber(customerUpdate.phoneNumber());
+        customer.setProfilePicture(customerUpdate.profilePicture());
         customer.setCnpj(customerUpdate.cnpj());
 
         Customer updatedCustomer = this.customerRepository.save(customer);

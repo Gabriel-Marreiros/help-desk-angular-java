@@ -1,7 +1,7 @@
 spring:
 
   datasource:
-    url: jdbc:h2:mem:inventory-management-angular-java
+    url: jdbc:h2:mem:help-desk-angular-java
     username: sa
     password: pass
     driver-class-name: org.h2.Driver

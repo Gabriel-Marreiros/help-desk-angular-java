@@ -7,6 +7,8 @@ import java.util.UUID;
 public record TicketUpdateDTO(
         String title,
         String description,
+        @JsonProperty("customer")
+        UUID customerId,
         @JsonProperty("technical")
         UUID technicalId,
         @JsonProperty("priority")

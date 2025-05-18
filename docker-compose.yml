@@ -2,13 +2,12 @@ version: '2'
 
 services:
   backend:
-    image: gabrielmarreiros/help-desk-angular-java-backend
     container_name: help-desk-angular-java-backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
-    build:
-      context: backend
-      dockerfile: Dockerfile
     environment:
       - DB_URL=${DB_URL}
       - DB_USER=${DB_USER}
@@ -21,17 +20,16 @@ services:
       - help-desk-angular-java-network
 
   frontend:
-    image: gabrielmarreiros/help-desk-angular-java-frontend
     container_name: help-desk-angular-java-frontend
-    ports:
-      - "4200:4200"
-    environment:
-      - API_URL=${API_URL}
     build:
       context: frontend
       dockerfile: Dockerfile
       args:
         - API_URL=$API_URL
+    ports:
+      - "4200:4200"
+    environment:
+      - API_URL=${API_URL}
     depends_on:
       - backend
     networks:
@@ -42,7 +40,7 @@ services:
     container_name: mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: test
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
     ports:
       - "3306:3306"
     networks:
