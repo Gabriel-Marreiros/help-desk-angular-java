@@ -7,8 +7,11 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
@@ -55,9 +58,10 @@ class TechnicalRepositoryTest {
         void givenAPageRequest_whenRequesting_thenReturnAPageOfTechniciansWithTicketsStatusCount(){
 //            Arrange
             PageRequest pageRequest = PageRequest.of(0, 3);
+            Example<Technical> example = Example.of(new Technical());
 
 //            Action
-            Page<TechnicalWithTicketStatusCountDTO> repositoryResponse = technicalRepository.getTechniciansWithTicketsStatusCountPaginated(pageRequest);
+            Page<TechnicalWithTicketStatusCountDTO> repositoryResponse = technicalRepository.getTechniciansWithTicketsStatusCountPaginated(example, pageRequest);
 
 //            Assert
             Assertions.assertThatList(repositoryResponse.getContent())
@@ -77,24 +81,30 @@ class TechnicalRepositoryTest {
         @Test
         @DisplayName("")
         void whenRequesting_thenInactiveUser() {
+//          Arrange
+            UUID technicalId = UUID.fromString("16f2a0b5-73bd-4634-90d2-a6f051c8f0e5");
+
 //          Action
-            technicalRepository.changeTechnicalActiveStatus(UUID.fromString("16f2a0b5-73bd-4634-90d2-a6f051c8f0e5"));
-            Technical repositoryResponse = technicalRepository.findById(UUID.fromString("351725fa-eacc-4e62-a066-65c1fe02a6f0")).orElse(null);
+            technicalRepository.changeTechnicalActiveStatus(technicalId);
+            Technical repositoryResponse = technicalRepository.findById(technicalId).orElse(null);
 
 //          Assert
-            assertThat(repositoryResponse.getUser().getUserStatus())
+            assertThat(repositoryResponse.getUserStatus())
                     .isEqualTo(UserStatusEnum.INACTIVE.getValue());
         }
 
         @Test
         @DisplayName("")
         void whenRequesting_thenActiveUser() {
+//          Arrange
+            UUID technicalId = UUID.fromString("8146338a-c0a2-43bb-8aac-a8702e884b08");
+
 //          Action
-            technicalRepository.changeTechnicalActiveStatus(UUID.fromString("8146338a-c0a2-43bb-8aac-a8702e884b08"));
-            Technical repositoryResponse = technicalRepository.findById(UUID.fromString("416f6475-cf96-43f6-aaec-e6f654b69d2d")).orElse(null);
+            technicalRepository.changeTechnicalActiveStatus(technicalId);
+            Technical repositoryResponse = technicalRepository.findById(technicalId).orElse(null);
 
 //          Assert
-            assertThat(repositoryResponse.getUser().getUserStatus())
+            assertThat(repositoryResponse.getUserStatus())
                     .isEqualTo(UserStatusEnum.ACTIVE.getValue());
         }
     }

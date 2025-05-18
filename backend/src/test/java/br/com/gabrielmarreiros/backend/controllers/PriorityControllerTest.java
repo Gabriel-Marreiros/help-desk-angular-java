@@ -1,6 +1,6 @@
 package br.com.gabrielmarreiros.backend.controllers;
 
-import br.com.gabrielmarreiros.backend.filters.AuthenticationFilter;
+import br.com.gabrielmarreiros.backend.filters.JwtAuthenticationFilter;
 import br.com.gabrielmarreiros.backend.models.Priority;
 import br.com.gabrielmarreiros.backend.services.PriorityService;
 import br.com.gabrielmarreiros.backend.testConfigs.SpringSecurityTestConfig;
@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 
-@WebMvcTest(controllers = PriorityController.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {AuthenticationFilter.class})})
+@WebMvcTest(controllers = PriorityController.class, excludeFilters = {@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {JwtAuthenticationFilter.class})})
 @Import(SpringSecurityTestConfig.class)
 class PriorityControllerTest {
     @MockBean

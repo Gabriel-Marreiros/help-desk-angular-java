@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,7 @@ class TechnicalServiceTest {
             List<Technical> technicalListMock = new ArrayList<>();
             technicalListMock.add(technicalMock);
 
-            Mockito.when(technicalRepository.findAll()).thenReturn(technicalListMock);
+            Mockito.when(technicalRepository.findAll(Mockito.any(Sort.class))).thenReturn(technicalListMock);
 
 //          Action
             List<Technical> serviceResponse = technicalService.getAllTechnicians();
@@ -64,9 +65,7 @@ class TechnicalServiceTest {
         @Test
         void givenAUserThatAlreadyExists_whenRequesting_thenThrowsUserAlreadyRegisteredException(){
 //            Arrange
-            User userMock = Mockito.mock(User.class);
             Technical technicalMock = Mockito.mock(Technical.class);
-            Mockito.when(technicalMock.getUser()).thenReturn(userMock);
 
             Mockito.when(userService.verifyUserAlreadyRegistered(Mockito.any())).thenReturn(true);
 
@@ -85,12 +84,10 @@ class TechnicalServiceTest {
         void whenRequesting_thenUpdateAndReturnTechnical() {
 //            Arrange
             UUID technicalId = UUID.randomUUID();
-            User userMock = Mockito.mock(User.class);
             TechnicalUpdateRequestDTO technicalUpdateDTOMock = Mockito.mock(TechnicalUpdateRequestDTO.class);
             Technical technicalMock = Mockito.mock(Technical.class);
 
-            Mockito.when(technicalMock.getUser()).thenReturn(userMock);
-
+            Mockito.when(userService.isUserHimselfOrAdmin(technicalId)).thenReturn(true);
             Mockito.when(technicalRepository.findById(technicalId)).thenReturn(Optional.of(technicalMock));
             Mockito.when(technicalRepository.save(technicalMock)).thenReturn(technicalMock);
 
@@ -109,6 +106,7 @@ class TechnicalServiceTest {
             TechnicalUpdateRequestDTO technicalUpdateDTOMock = Mockito.mock(TechnicalUpdateRequestDTO.class);
 
             Mockito.when(technicalRepository.findById(technicalId)).thenReturn(Optional.ofNullable(null));
+            Mockito.when(userService.isUserHimselfOrAdmin(technicalId)).thenReturn(true);
 
 //            Assert
             assertThatException()
