@@ -324,7 +324,7 @@ export class TicketsFormComponent implements OnInit {
 
   canEditTicket(): boolean {
     return (this.isDetailsForm &&
-      (!this.ticketStatusIs(TicketStatusEnum.RESOLVED) || !this.ticketStatusIs(TicketStatusEnum.CANCELED)) &&
+      (!this.ticketStatusIs(TicketStatusEnum.RESOLVED) && !this.ticketStatusIs(TicketStatusEnum.CANCELED)) &&
       (this.isTicketCustomer() || this.isAdmin()));
   }
 
