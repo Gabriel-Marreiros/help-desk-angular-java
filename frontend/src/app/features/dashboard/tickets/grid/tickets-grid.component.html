@@ -22,9 +22,11 @@
       <mat-label>Status</mat-label>
       <mat-select [(ngModel)]="statusFilter" name="statusFilter" (valueChange)="handleSelectFilter({status: $event})">
         <mat-option>Limpar filtro</mat-option>
+        <mat-option [value]="ticketStatusEnum.NEW_TICKET">{{ticketStatusEnum.NEW_TICKET}}</mat-option>
         <mat-option [value]="ticketStatusEnum.PENDING">{{ticketStatusEnum.PENDING}}</mat-option>
         <mat-option [value]="ticketStatusEnum.IN_PROGRESS">{{ticketStatusEnum.IN_PROGRESS}}</mat-option>
         <mat-option [value]="ticketStatusEnum.RESOLVED">{{ticketStatusEnum.RESOLVED}}</mat-option>
+        <mat-option [value]="ticketStatusEnum.CANCELED">{{ticketStatusEnum.CANCELED}}</mat-option>
       </mat-select>
     </mat-form-field>
 
