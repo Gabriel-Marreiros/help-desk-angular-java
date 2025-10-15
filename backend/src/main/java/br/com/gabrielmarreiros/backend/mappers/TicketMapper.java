@@ -8,6 +8,7 @@ import br.com.gabrielmarreiros.backend.models.Customer;
 import br.com.gabrielmarreiros.backend.models.Priority;
 import br.com.gabrielmarreiros.backend.models.Technical;
 import br.com.gabrielmarreiros.backend.models.Ticket;
+import br.com.gabrielmarreiros.backend.utils.TicketUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +35,7 @@ public class TicketMapper {
         ticketEntity.setDescription(ticketRequestDTO.description());
         ticketEntity.setOpeningDate(ticketRequestDTO.openingDate());
         ticketEntity.setPriority(priority);
-        ticketEntity.setTicketStatus(ticketRequestDTO.status());
+        ticketEntity.setTicketStatus(TicketUtils.getTicketStatusEnumFromString(ticketRequestDTO.status()));
 
         if(ticketRequestDTO.technical() != null){
             Technical technical = new Technical(ticketRequestDTO.technical());
@@ -68,7 +69,7 @@ public class TicketMapper {
                 ticketEntity.getOpeningDate(),
                 ticketEntity.getClosedDate(),
                 ticketEntity.getPriority(),
-                ticketEntity.getTicketStatus()
+                ticketEntity.getTicketStatus().getValue()
         );
     }
 

@@ -1,5 +1,6 @@
 package br.com.gabrielmarreiros.backend.models;
 
+import br.com.gabrielmarreiros.backend.enums.TicketStatusEnum;
 import jakarta.persistence.*;
 
 import java.util.*;
@@ -33,7 +34,8 @@ public class Ticket {
     private Priority priority;
 
     @Column(nullable = false)
-    private String ticketStatus;
+    @Enumerated(EnumType.STRING)
+    private TicketStatusEnum ticketStatus;
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
@@ -47,7 +49,7 @@ public class Ticket {
 
     public Ticket() {}
 
-    public Ticket(String code, String title, String description, Date openingDate, Date closedDate, Priority priority, String ticketStatus, Customer customer, Technical technical) {
+    public Ticket(String code, String title, String description, Date openingDate, Date closedDate, Priority priority, TicketStatusEnum ticketStatus, Customer customer, Technical technical) {
         this.code = code;
         this.title = title;
         this.description = description;
@@ -129,11 +131,11 @@ public class Ticket {
         this.priority = priority;
     }
 
-    public String getTicketStatus() {
+    public TicketStatusEnum getTicketStatus() {
         return ticketStatus;
     }
 
-    public void setTicketStatus(String ticketStatus) {
+    public void setTicketStatus(TicketStatusEnum ticketStatus) {
         this.ticketStatus = ticketStatus;
     }
 

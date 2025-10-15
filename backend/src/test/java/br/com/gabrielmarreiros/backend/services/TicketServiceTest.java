@@ -147,7 +147,7 @@ class TicketServiceTest {
             UUID ticketId = UUID.fromString("733aefa2-22df-48d5-a16e-9242cc4156b9");
 
             Ticket ticketMock = Mockito.mock(Ticket.class);
-            Mockito.when(ticketMock.getTicketStatus()).thenReturn(TicketStatusEnum.NEW_TICKET.getValue());
+            Mockito.when(ticketMock.getTicketStatus()).thenReturn(TicketStatusEnum.NEW_TICKET);
 
             String invalidStatus = "Invalid Status";
 
@@ -259,7 +259,7 @@ class TicketServiceTest {
             TicketUpdateDTO ticketUpdateDTOMock = Mockito.mock(TicketUpdateDTO.class);
 
             Ticket ticketMock = Mockito.mock(Ticket.class);
-            Mockito.when(ticketMock.getTicketStatus()).thenReturn(TicketStatusEnum.NEW_TICKET.getValue());
+            Mockito.when(ticketMock.getTicketStatus()).thenReturn(TicketStatusEnum.NEW_TICKET);
 
             Mockito.when(ticketRepository.findById(ticketId)).thenReturn(Optional.of(ticketMock));
             Mockito.when(ticketRepository.save(ticketMock)).thenReturn(ticketMock);

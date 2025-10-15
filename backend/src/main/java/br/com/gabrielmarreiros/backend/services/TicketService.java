@@ -19,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -70,7 +71,7 @@ public class TicketService {
             ticket.setTechnical(technical);
         }
 
-        String ticketStatus = ticket.getTechnical() != null ? TicketStatusEnum.PENDING.getValue() : TicketStatusEnum.NEW_TICKET.getValue();
+        TicketStatusEnum ticketStatus = ticket.getTechnical() != null ? TicketStatusEnum.PENDING : TicketStatusEnum.NEW_TICKET;
 
         ticket.setTicketStatus(ticketStatus);
 
@@ -93,19 +94,17 @@ public class TicketService {
             throw new InvalidRequestException();
         }
 
-        boolean canChangeTicketStatus = this.canEditTicket(ticket);
+        boolean canUpdateTicketStatus = this.canUpdateTicketStatus(ticket);
 
-        if(!canChangeTicketStatus){
+        if(!canUpdateTicketStatus){
             throw new UnauthorizedException();
         }
 
-        if (!TicketUtils.ticketStatusIsValid(newTicketStatus)){
-            throw new InvalidTicketStatusException();
-        }
+        TicketStatusEnum newTicketStatusEnum = TicketUtils.getTicketStatusEnumFromString(newTicketStatus);
 
-        ticket.setTicketStatus(newTicketStatus);
+        ticket.setTicketStatus(newTicketStatusEnum);
 
-        if(newTicketStatus.equals(TicketStatusEnum.RESOLVED.getValue()) || newTicketStatus.equals(TicketStatusEnum.CANCELED.getValue())){
+        if(newTicketStatusEnum == TicketStatusEnum.RESOLVED || newTicketStatusEnum == TicketStatusEnum.CANCELED){
             ticket.setClosedDate(new Date());
         }
 
@@ -123,14 +122,10 @@ public class TicketService {
     }
 
     public Page<Ticket> getTicketsWithFiltersPaginated(TicketFiltersDTO ticketFiltersDTO, PageRequest pageRequest) {
-        if (ticketFiltersDTO.status() != null && !TicketUtils.ticketStatusIsValid(ticketFiltersDTO.status())){
-            throw new InvalidTicketStatusException();
-        };
-
         Ticket ticketFilter = new Ticket();
         ticketFilter.setCustomer(new Customer(ticketFiltersDTO.customer()));
         ticketFilter.setPriority(new Priority(ticketFiltersDTO.priority()));
-        ticketFilter.setTicketStatus(ticketFiltersDTO.status());
+        ticketFilter.setTicketStatus(TicketUtils.getTicketStatusEnumFromString(ticketFiltersDTO.status()));
         ticketFilter.setSearchTerm(ticketFiltersDTO.search());
 
         if(ticketFiltersDTO.technical() != null){
@@ -201,11 +196,32 @@ public class TicketService {
         }
 
         ticket.setTechnical(technical);
-        ticket.setTicketStatus(TicketStatusEnum.PENDING.getValue());
+        ticket.setTicketStatus(TicketStatusEnum.PENDING);
 
         Ticket updatedTicket = ticketRepository.save(ticket);
 
         return updatedTicket;
+    }
+
+    public boolean canUpdateTicketStatus(Ticket ticket) {
+        User loggedUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UUID loggedUserId = loggedUser.getId();
+
+        TicketStatusEnum ticketStatus = ticket.getTicketStatus();
+
+        UUID ticketCustomerId = ticket.getCustomer().getId();
+        UUID ticketTechnicalId = ticket.getTechnical().getId();
+
+        boolean isTicketCustomer = loggedUserId.equals(ticketCustomerId);
+        boolean isTicketTechnical = loggedUserId.equals(ticketTechnicalId);
+
+        boolean candUpdateStatus = switch(ticketStatus) {
+            case NEW_TICKET, PENDING -> isTicketCustomer || isTicketTechnical;
+            case IN_PROGRESS -> isTicketTechnical;
+            case RESOLVED, CANCELED -> false;
+        };
+
+        return candUpdateStatus;
     }
 
     public boolean canEditTicket(Ticket ticket) {
@@ -226,9 +242,9 @@ public class TicketService {
     }
 
     public boolean ticketIsClosed(Ticket ticket){
-        String oldTicketStatus = ticket.getTicketStatus();
+        TicketStatusEnum oldTicketStatus = ticket.getTicketStatus();
 
-        if(oldTicketStatus.equals(TicketStatusEnum.RESOLVED.getValue()) || oldTicketStatus.equals(TicketStatusEnum.CANCELED.getValue())){
+        if(oldTicketStatus == TicketStatusEnum.RESOLVED || oldTicketStatus == TicketStatusEnum.CANCELED){
             return true;
         }
 
