@@ -115,7 +115,7 @@
             <button *ngIf="ticketStatusIs(ticketStatusEnum.NEW_TICKET) && isTechnical()" class="btn btn-warning" (click)="assignTicketTechnical()" >Atribuir Chamado</button>
             <button *ngIf="ticketStatusIs(ticketStatusEnum.PENDING) && isTicketTechnical()" class="btn btn-warning" (click)="changeTicketStatus(ticketStatusEnum.IN_PROGRESS)" >Iniciar Chamado</button>
             <button *ngIf="ticketStatusIs(ticketStatusEnum.IN_PROGRESS) && isTicketTechnical()" class="btn btn-success" (click)="changeTicketStatus(ticketStatusEnum.RESOLVED)">Finalizar Chamado</button>
-            <button *ngIf="ticketStatusIs(ticketStatusEnum.IN_PROGRESS) && (isTicketCustomer() || isAdmin())" class="btn btn-danger" (click)="changeTicketStatus(ticketStatusEnum.CANCELED)">Cancelar Chamado</button>
+            <button *ngIf="ticketStatusIs(ticketStatusEnum.PENDING) && (isTicketCustomer() || isAdmin())" class="btn btn-danger" (click)="changeTicketStatus(ticketStatusEnum.CANCELED)">Cancelar Chamado</button>
           </div>
         </div>
       </form>
@@ -123,7 +123,7 @@
       <!-- Seção de Comentários -->
       <div class="row col-7 mt-4" *ngIf="isDetailsForm">
         <!-- Editor -->
-        <div *ngIf="canEditTicket()" class="my-5">
+        <div *ngIf="canComment()" class="my-5">
           <div class="d-flex align-items-start justify-content-center gap-1">
             <app-user-profile-button
               [userId]="loggedUser.id"

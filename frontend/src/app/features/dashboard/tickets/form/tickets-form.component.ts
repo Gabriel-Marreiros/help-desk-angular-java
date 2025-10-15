@@ -401,9 +401,11 @@ export class TicketsFormComponent implements OnInit, OnDestroy {
   }
 
   canEditTicket(): boolean {
-    return (this.isDetailsForm &&
-      (!this.ticketStatusIs(TicketStatusEnum.RESOLVED) && !this.ticketStatusIs(TicketStatusEnum.CANCELED)) &&
-      (this.isTicketCustomer() || this.isAdmin()));
+    return (
+      this.isDetailsForm &&
+      (!this.ticketStatusIs(TicketStatusEnum.IN_PROGRESS) && !this.ticketStatusIs(TicketStatusEnum.RESOLVED) && !this.ticketStatusIs(TicketStatusEnum.CANCELED)) &&
+      (this.isTicketCustomer() || this.isAdmin())
+    );
   }
 
   return(): void {
@@ -532,6 +534,14 @@ export class TicketsFormComponent implements OnInit, OnDestroy {
   disableCommentUpdate(): void {
     this.commentForm.reset();
     this.onEditing = null;
+  }
+
+  canComment(): boolean {
+    return (
+      this.isDetailsForm &&
+      (!this.ticketStatusIs(TicketStatusEnum.RESOLVED) && !this.ticketStatusIs(TicketStatusEnum.CANCELED)) &&
+      (this.isTicketCustomer() || this.isTicketTechnical())
+    );
   }
 
   canUpdateComment(userId: string): boolean {
