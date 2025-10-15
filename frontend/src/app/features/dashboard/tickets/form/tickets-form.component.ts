@@ -1,9 +1,10 @@
 import { Location } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
+import { Client } from '@stomp/stompjs';
 import { formatDistanceToNowStrict } from 'date-fns';
 import ptBRLocale from 'date-fns/locale/pt-BR';
 import { BehaviorSubject } from 'rxjs';
@@ -27,7 +28,7 @@ import { TicketCommentModel } from 'src/app/typings/models/ticketComment.model';
   templateUrl: './tickets-form.component.html',
   styleUrls: ['./tickets-form.component.scss']
 })
-export class TicketsFormComponent implements OnInit {
+export class TicketsFormComponent implements OnInit, OnDestroy {
 
   ticketForm: FormGroup = new FormGroup({
     id: new FormControl(),
@@ -42,6 +43,8 @@ export class TicketsFormComponent implements OnInit {
     attachments: new FormControl(),
     status: new FormControl(TicketStatusEnum.NEW_TICKET)
   })
+
+  ticketId!: string;
 
   technicalOptions!: Array<TechnicalModel>;
   customerOptions!: Array<CustomerModel>;
@@ -82,6 +85,8 @@ export class TicketsFormComponent implements OnInit {
   totalComments!: number;
   onEditing!: string | null;
 
+  websocketClient!: Client;
+
   constructor(
     private route: ActivatedRoute,
     private location: Location,
@@ -101,11 +106,11 @@ export class TicketsFormComponent implements OnInit {
     this.getTechnicalOptions();
     this.getCustomerOptions();
 
-    const ticketId = this.route.snapshot.params["id"];
+    this.ticketId = this.route.snapshot.params["id"];
 
-    if(ticketId){
-      this.loadTicketDetails(ticketId);
-      this.loadTicketComments(ticketId);
+    if(this.ticketId){
+      this.loadTicketDetails(this.ticketId);
+      this.loadTicketComments(this.ticketId);
 
       this.ticketForm.disable();
       this.isNewTicket = false;
@@ -117,6 +122,48 @@ export class TicketsFormComponent implements OnInit {
       customerControl.setValue(this.loggedUser.id);
       customerControl.disable();
     }
+  }
+
+  ngOnDestroy(): void {
+    if(this.websocketClient){
+      this.websocketClient.deactivate();
+    }
+  }
+
+  private startLiveTicketComments(): void {
+    this.websocketClient = new Client({
+      brokerURL: 'ws://localhost:8080/ws',
+      connectionTimeout: 5000,
+    });
+
+    this.websocketClient.onConnect = () => {
+      this.websocketClient.subscribe(`/topic/ticket/${this.ticketId}/newComment`, (message) => {
+          const newComment = JSON.parse(message.body);
+
+          const ticketComments: TicketCommentModel[] = this.ticketComments$.value;
+          ticketComments.unshift(newComment);
+
+          this.ticketComments$.next(ticketComments);
+
+          this.totalComments++;
+        }
+      );
+
+      this.websocketClient.subscribe(`/topic/ticket/${this.ticketId}/editedComment`, (message) => {
+          const editedComment = JSON.parse(message.body);
+
+          const ticketComments = this.ticketComments$.value;
+
+          const editedCommentIndex = ticketComments.findIndex((ticketComment) => ticketComment.id === editedComment.id);
+
+          ticketComments.splice(editedCommentIndex, 1, editedComment);
+
+          this.ticketComments$.next(ticketComments);
+        }
+      );
+    }
+
+    this.websocketClient.activate();
   }
 
   private getPriorityOptions(){
@@ -162,6 +209,8 @@ export class TicketsFormComponent implements OnInit {
           attachments: "",
           status: data.body?.ticketStatus
         });
+
+        this.startLiveTicketComments();
 
         loadingModalRef.close();
       },
@@ -384,13 +433,6 @@ export class TicketsFormComponent implements OnInit {
 
     this.ticketCommentsServices.saveComment(this.commentForm.value).subscribe({
         next: (response) => {
-          const savedComment = response.body!
-
-          this.ticketComments$.value.unshift(savedComment);
-          this.ticketComments$.next(this.ticketComments$.value);
-
-          this.totalComments++;
-
           this.disableNewComment();
 
           loadingModalRef.close();
@@ -419,17 +461,6 @@ export class TicketsFormComponent implements OnInit {
 
     this.ticketCommentsServices.updateComment(commentId, this.commentForm.value).subscribe({
         next: (response) => {
-          const savedComment = response.body!
-          const updatedTicketComentsList = this.ticketComments$.value.map((comment) => {
-            if(comment.id == savedComment.id){
-              return savedComment
-            }
-
-            return comment;
-          });
-
-          this.ticketComments$.next(updatedTicketComentsList);
-
           this.disableCommentUpdate();
 
           loadingModalRef.close();

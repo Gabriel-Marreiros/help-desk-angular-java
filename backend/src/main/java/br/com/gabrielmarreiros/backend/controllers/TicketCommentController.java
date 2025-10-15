@@ -7,7 +7,6 @@ import br.com.gabrielmarreiros.backend.mappers.TicketCommentMapper;
 import br.com.gabrielmarreiros.backend.models.TicketComment;
 import br.com.gabrielmarreiros.backend.services.TicketCommentService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,9 +14,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @Tag(name = "Tickets Comments", description = "Recursos para manipulação dos comentários de um chamado")
@@ -27,10 +26,12 @@ public class TicketCommentController {
 
     private final TicketCommentService ticketCommentService;
     private final TicketCommentMapper ticketCommentMapper;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
-    public TicketCommentController(TicketCommentService ticketCommentService, TicketCommentMapper ticketCommentMapper) {
+    public TicketCommentController(TicketCommentService ticketCommentService, TicketCommentMapper ticketCommentMapper, SimpMessagingTemplate simpMessagingTemplate) {
         this.ticketCommentService = ticketCommentService;
         this.ticketCommentMapper = ticketCommentMapper;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     @Operation(
@@ -66,6 +67,10 @@ public class TicketCommentController {
 
         TicketCommentResponseDTO ticketCommentResponse = this.ticketCommentMapper.toResponseDTO(createdComment);
 
+        UUID ticketId = createdComment.getTicket().getId();
+
+        simpMessagingTemplate.convertAndSend("/topic/ticket/" + ticketId + "/newComment", ticketCommentResponse);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(ticketCommentResponse);
     }
 
@@ -82,6 +87,10 @@ public class TicketCommentController {
         TicketComment updatedComment = this.ticketCommentService.updateComment(ticketCommentId, ticketCommentUpdate);
 
         TicketCommentResponseDTO ticketCommentResponse = this.ticketCommentMapper.toResponseDTO(updatedComment);
+
+        UUID ticketId = updatedComment.getTicket().getId();
+
+        simpMessagingTemplate.convertAndSend("/topic/ticket/" + ticketId + "/editedComment", ticketCommentResponse);
 
         return ResponseEntity.status(HttpStatus.OK).body(ticketCommentResponse);
     }

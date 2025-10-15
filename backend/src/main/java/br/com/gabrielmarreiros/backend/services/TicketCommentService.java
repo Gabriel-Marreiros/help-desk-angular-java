@@ -4,7 +4,9 @@ import br.com.gabrielmarreiros.backend.dto.ticketComment.TicketCommentUpdateDTO;
 import br.com.gabrielmarreiros.backend.exceptions.TicketCommentNotFoundException;
 import br.com.gabrielmarreiros.backend.exceptions.TicketNotFoundException;
 import br.com.gabrielmarreiros.backend.exceptions.UnauthorizedException;
-import br.com.gabrielmarreiros.backend.models.*;
+import br.com.gabrielmarreiros.backend.models.Ticket;
+import br.com.gabrielmarreiros.backend.models.TicketComment;
+import br.com.gabrielmarreiros.backend.models.User;
 import br.com.gabrielmarreiros.backend.repositories.TicketCommentRepository;
 import br.com.gabrielmarreiros.backend.repositories.TicketRepository;
 import br.com.gabrielmarreiros.backend.repositories.UserRepository;
@@ -21,13 +23,11 @@ import java.util.UUID;
 public class TicketCommentService {
 
     private final TicketCommentRepository ticketCommentRepository;
-    private final TicketService ticketService;
     private final TicketRepository ticketRepository;
     private final UserRepository userRepository;
 
-    public TicketCommentService(TicketCommentRepository ticketCommentRepository, TicketService ticketService, TicketRepository ticketRepository, UserRepository userRepository) {
+    public TicketCommentService(TicketCommentRepository ticketCommentRepository, TicketRepository ticketRepository, UserRepository userRepository) {
         this.ticketCommentRepository = ticketCommentRepository;
-        this.ticketService = ticketService;
         this.ticketRepository = ticketRepository;
         this.userRepository = userRepository;
     }

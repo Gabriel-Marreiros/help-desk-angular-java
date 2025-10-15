@@ -30,7 +30,7 @@ public class SecurityConfig {
             .csrf((csrf) -> csrf.disable())
             .sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests((authorizeRequests) -> authorizeRequests
-                .requestMatchers("/auth/**", "/api-docs/**", "/swagger**/**", "/actuator/**").permitAll()
+                .requestMatchers("/auth/**", "/api-docs/**", "/swagger**/**", "/actuator/**", "/ws/**").permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/customers", "/technicians").hasAuthority(RolesEnum.ADMIN.value())
                 .requestMatchers(HttpMethod.POST, "/tickets").hasAnyAuthority(RolesEnum.ADMIN.value(), RolesEnum.CUSTOMER.value())
                 .anyRequest().authenticated()
