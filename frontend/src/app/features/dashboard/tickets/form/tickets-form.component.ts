@@ -7,7 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Client } from '@stomp/stompjs';
 import { formatDistanceToNowStrict } from 'date-fns';
 import ptBRLocale from 'date-fns/locale/pt-BR';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { CustomerService } from 'src/app/services/customer/customer.service';
 import { LoggedUserService } from 'src/app/services/logged-user-details/logged-user-details.service';
 import { PriorityService } from 'src/app/services/priority/priority.service';
@@ -87,6 +87,8 @@ export class TicketsFormComponent implements OnInit, OnDestroy {
 
   websocketClient!: Client;
 
+  subscriptions: Array<Subscription> = [];
+
   constructor(
     private route: ActivatedRoute,
     private location: Location,
@@ -125,6 +127,8 @@ export class TicketsFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription) => subscription.unsubscribe());
+
     if(this.websocketClient){
       this.websocketClient.deactivate();
     }
@@ -167,34 +171,39 @@ export class TicketsFormComponent implements OnInit, OnDestroy {
   }
 
   private getPriorityOptions(){
-    this.priorityServices.getAllPriorities().subscribe({
+    const sub = this.priorityServices.getAllPriorities().subscribe({
       next: (response) => {
         this.priorityOptions = response.body!;
       }
     })
+
+    this.subscriptions.push(sub);
   }
 
   private getTechnicalOptions(): void {
-    this.technicalServices.getAllActiveTechnicals().subscribe({
+    const sub = this.technicalServices.getAllActiveTechnicals().subscribe({
       next: (data) => {
         this.technicalOptions = data.body!
       }
     });
+
+    this.subscriptions.push(sub);
   }
 
-
   private getCustomerOptions(): void {
-    this.customerServices.getAllCustomers().subscribe({
+    const sub = this.customerServices.getAllCustomers().subscribe({
       next: (data) => {
         this.customerOptions = data.body!
       }
     });
+
+    this.subscriptions.push(sub);
   }
 
   loadTicketDetails(ticketId: string){
     const loadingModalRef = this.dialog.open(LoadingModalComponent);
 
-    this.ticketsService.getTicketById(ticketId).subscribe({
+    const sub = this.ticketsService.getTicketById(ticketId).subscribe({
       next: (data) => {
         this.ticketForm.patchValue({
           id: data.body?.id,
@@ -242,7 +251,7 @@ export class TicketsFormComponent implements OnInit, OnDestroy {
 
     this.ticketForm.get("customer")?.enable();
 
-    this.ticketsService.saveTicket(this.ticketForm.value).subscribe({
+    const sub = this.ticketsService.saveTicket(this.ticketForm.value).subscribe({
         next: (response) => {
           loadingModalRef.close();
 
@@ -260,6 +269,8 @@ export class TicketsFormComponent implements OnInit, OnDestroy {
         }
       }
     )
+
+    this.subscriptions.push(sub);
   }
 
   updateTicket(): void {
@@ -269,7 +280,7 @@ export class TicketsFormComponent implements OnInit, OnDestroy {
 
     const loadingModalRef = this.dialog.open(LoadingModalComponent);
 
-    this.ticketsService.updateTicket(ticketId, this.ticketForm.value).subscribe({
+    const sub = this.ticketsService.updateTicket(ticketId, this.ticketForm.value).subscribe({
       next: (response) => {
         loadingModalRef.close();
 
@@ -288,6 +299,8 @@ export class TicketsFormComponent implements OnInit, OnDestroy {
         genericModalRef.componentInstance.redirectLink = "dashboard/chamados";
       }
     })
+
+    this.subscriptions.push(sub);
   }
 
   assignTicketTechnical(): void {
@@ -296,7 +309,7 @@ export class TicketsFormComponent implements OnInit, OnDestroy {
     const ticketId = this.ticketForm.get("id")?.value;
     const technicalId = this.loggedUser.id;
 
-    this.ticketsService.assignTicketTechnical(ticketId, {technicalId}).subscribe({
+    const sub = this.ticketsService.assignTicketTechnical(ticketId, {technicalId}).subscribe({
         next: (response) => {
           loadingModalRef.close();
 
@@ -314,6 +327,8 @@ export class TicketsFormComponent implements OnInit, OnDestroy {
         }
       }
     )
+
+    this.subscriptions.push(sub);
   }
 
   changeTicketStatus(nextStatus: TicketStatusEnum): void {
@@ -321,7 +336,7 @@ export class TicketsFormComponent implements OnInit, OnDestroy {
 
     const ticketId = this.ticketForm.get("id")?.value;
 
-    this.ticketsService.updateTicketStatus(ticketId, nextStatus).subscribe({
+    const sub = this.ticketsService.updateTicketStatus(ticketId, nextStatus).subscribe({
       next: (response) => {
         loadingModalRef.close();
 
@@ -340,6 +355,8 @@ export class TicketsFormComponent implements OnInit, OnDestroy {
         genericModalRef.componentInstance.redirectLink = "dashboard/chamados";
       }
     })
+
+    this.subscriptions.push(sub);
   }
 
   getTicketStatus(): TicketStatusEnum {
@@ -406,7 +423,7 @@ export class TicketsFormComponent implements OnInit, OnDestroy {
   }
 
   private loadTicketComments(ticketId: string): void {
-    this.ticketCommentsServices.getAllTicketComments(ticketId, {page: this.commentPage, size: this.commentPageSize}).subscribe({
+    const sub = this.ticketCommentsServices.getAllTicketComments(ticketId, {page: this.commentPage, size: this.commentPageSize}).subscribe({
       next: (response) => {
         this.finishComments = response.body!.last;
         const comments = this.ticketComments$.value.concat(response.body?.content || []);
@@ -415,6 +432,8 @@ export class TicketsFormComponent implements OnInit, OnDestroy {
         this.totalComments = response.body?.totalElements || 0;
       }
     });
+
+    this.subscriptions.push(sub);
   }
 
   loadMoreComments(){
@@ -443,7 +462,7 @@ export class TicketsFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.ticketCommentsServices.saveComment(this.commentForm.value).subscribe({
+    const sub = this.ticketCommentsServices.saveComment(this.commentForm.value).subscribe({
         next: (response) => {
           this.disableNewComment();
 
@@ -459,6 +478,8 @@ export class TicketsFormComponent implements OnInit, OnDestroy {
         }
       }
     )
+
+    this.subscriptions.push(sub);
   }
 
   updateComment(): void {
@@ -471,7 +492,7 @@ export class TicketsFormComponent implements OnInit, OnDestroy {
 
     const commentId: string = this.commentForm.get("id")?.value;
 
-    this.ticketCommentsServices.updateComment(commentId, this.commentForm.value).subscribe({
+    const sub = this.ticketCommentsServices.updateComment(commentId, this.commentForm.value).subscribe({
         next: (response) => {
           this.disableCommentUpdate();
 
@@ -487,6 +508,8 @@ export class TicketsFormComponent implements OnInit, OnDestroy {
         }
       }
     )
+
+    this.subscriptions.push(sub);
   }
 
   addNewComment(): void {
