@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -216,12 +216,24 @@ export class TicketsFormComponent implements OnInit, OnDestroy {
       },
 
       error: (error) => {
-        console.error(error);
         loadingModalRef.close();
+
+        if(error.status === HttpStatusCode.NotFound){
+          const genericModalRef = this.dialog.open(GenericModalComponent);
+          genericModalRef.componentInstance.contentMessage = "Chamado não encontrado!";
+          genericModalRef.componentInstance.redirectLink = "dashboard/chamados";
+        }
+
+        if(error.status === HttpStatusCode.BadRequest){
+          const genericModalRef = this.dialog.open(GenericModalComponent);
+          genericModalRef.componentInstance.contentMessage = "Pesquisa inválida! Por favor, tente novamente.";
+          genericModalRef.componentInstance.redirectLink = "dashboard/chamados";
+        }
       }
     })
-  }
 
+    this.subscriptions.push(sub);
+  }
 
   saveTicket(): void {
     if(this.ticketForm.invalid) return;
